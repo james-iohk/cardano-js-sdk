@@ -24,6 +24,37 @@ export type Scalars = {
   Int64: number;
 };
 
+export type AddBlockInput = {
+  blockNo: Scalars['Int'];
+  confirmations: Scalars['Int'];
+  epoch: Scalars['Int'];
+  epochSlot: Scalars['Int'];
+  fees: Scalars['String'];
+  hash: Scalars['String'];
+  nextBlock: Scalars['String'];
+  previousBlock: Scalars['String'];
+  size: Scalars['Int'];
+  slot: Scalars['Int'];
+  slotLeader: Scalars['String'];
+  totalOutput: Scalars['String'];
+  txCount: Scalars['Int'];
+  vrf: Scalars['String'];
+};
+
+export type AddBlockPayload = {
+  __typename?: 'AddBlockPayload';
+  block?: Maybe<Array<Maybe<Block>>>;
+  numUids?: Maybe<Scalars['Int']>;
+};
+
+
+export type AddBlockPayloadBlockArgs = {
+  filter?: Maybe<BlockFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<BlockOrder>;
+};
+
 export type AddExtendedStakePoolMetadataFieldsInput = {
   contact?: Maybe<PoolContactDataRef>;
   country?: Maybe<Scalars['String']>;
@@ -380,6 +411,152 @@ export type AuthRule = {
   rule?: Maybe<Scalars['String']>;
 };
 
+export type Block = {
+  __typename?: 'Block';
+  blockNo: Scalars['Int'];
+  confirmations: Scalars['Int'];
+  epoch: Scalars['Int'];
+  epochSlot: Scalars['Int'];
+  fees: Scalars['String'];
+  hash: Scalars['String'];
+  nextBlock: Scalars['String'];
+  previousBlock: Scalars['String'];
+  size: Scalars['Int'];
+  slot: Scalars['Int'];
+  slotLeader: Scalars['String'];
+  totalOutput: Scalars['String'];
+  txCount: Scalars['Int'];
+  vrf: Scalars['String'];
+};
+
+export type BlockAggregateResult = {
+  __typename?: 'BlockAggregateResult';
+  blockNoAvg?: Maybe<Scalars['Float']>;
+  blockNoMax?: Maybe<Scalars['Int']>;
+  blockNoMin?: Maybe<Scalars['Int']>;
+  blockNoSum?: Maybe<Scalars['Int']>;
+  confirmationsAvg?: Maybe<Scalars['Float']>;
+  confirmationsMax?: Maybe<Scalars['Int']>;
+  confirmationsMin?: Maybe<Scalars['Int']>;
+  confirmationsSum?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
+  epochAvg?: Maybe<Scalars['Float']>;
+  epochMax?: Maybe<Scalars['Int']>;
+  epochMin?: Maybe<Scalars['Int']>;
+  epochSlotAvg?: Maybe<Scalars['Float']>;
+  epochSlotMax?: Maybe<Scalars['Int']>;
+  epochSlotMin?: Maybe<Scalars['Int']>;
+  epochSlotSum?: Maybe<Scalars['Int']>;
+  epochSum?: Maybe<Scalars['Int']>;
+  feesMax?: Maybe<Scalars['String']>;
+  feesMin?: Maybe<Scalars['String']>;
+  hashMax?: Maybe<Scalars['String']>;
+  hashMin?: Maybe<Scalars['String']>;
+  nextBlockMax?: Maybe<Scalars['String']>;
+  nextBlockMin?: Maybe<Scalars['String']>;
+  previousBlockMax?: Maybe<Scalars['String']>;
+  previousBlockMin?: Maybe<Scalars['String']>;
+  sizeAvg?: Maybe<Scalars['Float']>;
+  sizeMax?: Maybe<Scalars['Int']>;
+  sizeMin?: Maybe<Scalars['Int']>;
+  sizeSum?: Maybe<Scalars['Int']>;
+  slotAvg?: Maybe<Scalars['Float']>;
+  slotLeaderMax?: Maybe<Scalars['String']>;
+  slotLeaderMin?: Maybe<Scalars['String']>;
+  slotMax?: Maybe<Scalars['Int']>;
+  slotMin?: Maybe<Scalars['Int']>;
+  slotSum?: Maybe<Scalars['Int']>;
+  totalOutputMax?: Maybe<Scalars['String']>;
+  totalOutputMin?: Maybe<Scalars['String']>;
+  txCountAvg?: Maybe<Scalars['Float']>;
+  txCountMax?: Maybe<Scalars['Int']>;
+  txCountMin?: Maybe<Scalars['Int']>;
+  txCountSum?: Maybe<Scalars['Int']>;
+  vrfMax?: Maybe<Scalars['String']>;
+  vrfMin?: Maybe<Scalars['String']>;
+};
+
+export type BlockFilter = {
+  and?: Maybe<Array<Maybe<BlockFilter>>>;
+  has?: Maybe<Array<Maybe<BlockHasFilter>>>;
+  hash?: Maybe<StringHashFilter>;
+  not?: Maybe<BlockFilter>;
+  or?: Maybe<Array<Maybe<BlockFilter>>>;
+};
+
+export enum BlockHasFilter {
+  BlockNo = 'blockNo',
+  Confirmations = 'confirmations',
+  Epoch = 'epoch',
+  EpochSlot = 'epochSlot',
+  Fees = 'fees',
+  Hash = 'hash',
+  NextBlock = 'nextBlock',
+  PreviousBlock = 'previousBlock',
+  Size = 'size',
+  Slot = 'slot',
+  SlotLeader = 'slotLeader',
+  TotalOutput = 'totalOutput',
+  TxCount = 'txCount',
+  Vrf = 'vrf'
+}
+
+export type BlockOrder = {
+  asc?: Maybe<BlockOrderable>;
+  desc?: Maybe<BlockOrderable>;
+  then?: Maybe<BlockOrder>;
+};
+
+export enum BlockOrderable {
+  BlockNo = 'blockNo',
+  Confirmations = 'confirmations',
+  Epoch = 'epoch',
+  EpochSlot = 'epochSlot',
+  Fees = 'fees',
+  Hash = 'hash',
+  NextBlock = 'nextBlock',
+  PreviousBlock = 'previousBlock',
+  Size = 'size',
+  Slot = 'slot',
+  SlotLeader = 'slotLeader',
+  TotalOutput = 'totalOutput',
+  TxCount = 'txCount',
+  Vrf = 'vrf'
+}
+
+export type BlockPatch = {
+  blockNo?: Maybe<Scalars['Int']>;
+  confirmations?: Maybe<Scalars['Int']>;
+  epoch?: Maybe<Scalars['Int']>;
+  epochSlot?: Maybe<Scalars['Int']>;
+  fees?: Maybe<Scalars['String']>;
+  nextBlock?: Maybe<Scalars['String']>;
+  previousBlock?: Maybe<Scalars['String']>;
+  size?: Maybe<Scalars['Int']>;
+  slot?: Maybe<Scalars['Int']>;
+  slotLeader?: Maybe<Scalars['String']>;
+  totalOutput?: Maybe<Scalars['String']>;
+  txCount?: Maybe<Scalars['Int']>;
+  vrf?: Maybe<Scalars['String']>;
+};
+
+export type BlockRef = {
+  blockNo?: Maybe<Scalars['Int']>;
+  confirmations?: Maybe<Scalars['Int']>;
+  epoch?: Maybe<Scalars['Int']>;
+  epochSlot?: Maybe<Scalars['Int']>;
+  fees?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  nextBlock?: Maybe<Scalars['String']>;
+  previousBlock?: Maybe<Scalars['String']>;
+  size?: Maybe<Scalars['Int']>;
+  slot?: Maybe<Scalars['Int']>;
+  slotLeader?: Maybe<Scalars['String']>;
+  totalOutput?: Maybe<Scalars['String']>;
+  txCount?: Maybe<Scalars['Int']>;
+  vrf?: Maybe<Scalars['String']>;
+};
+
 export type ContainsFilter = {
   point?: Maybe<PointRef>;
   polygon?: Maybe<PolygonRef>;
@@ -410,6 +587,21 @@ export type DateTimeFilter = {
 export type DateTimeRange = {
   max: Scalars['DateTime'];
   min: Scalars['DateTime'];
+};
+
+export type DeleteBlockPayload = {
+  __typename?: 'DeleteBlockPayload';
+  block?: Maybe<Array<Maybe<Block>>>;
+  msg?: Maybe<Scalars['String']>;
+  numUids?: Maybe<Scalars['Int']>;
+};
+
+
+export type DeleteBlockPayloadBlockArgs = {
+  filter?: Maybe<BlockFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<BlockOrder>;
 };
 
 export type DeleteExtendedStakePoolMetadataFieldsPayload = {
@@ -1007,6 +1199,7 @@ export type MultiPolygonRef = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addBlock?: Maybe<AddBlockPayload>;
   addExtendedStakePoolMetadata?: Maybe<AddExtendedStakePoolMetadataPayload>;
   addExtendedStakePoolMetadataFields?: Maybe<AddExtendedStakePoolMetadataFieldsPayload>;
   addFraction?: Maybe<AddFractionPayload>;
@@ -1023,6 +1216,7 @@ export type Mutation = {
   addStakePoolMetricsStake?: Maybe<AddStakePoolMetricsStakePayload>;
   addStakePoolTransactions?: Maybe<AddStakePoolTransactionsPayload>;
   addThePoolsMediaAssets?: Maybe<AddThePoolsMediaAssetsPayload>;
+  deleteBlock?: Maybe<DeleteBlockPayload>;
   deleteExtendedStakePoolMetadata?: Maybe<DeleteExtendedStakePoolMetadataPayload>;
   deleteExtendedStakePoolMetadataFields?: Maybe<DeleteExtendedStakePoolMetadataFieldsPayload>;
   deleteFraction?: Maybe<DeleteFractionPayload>;
@@ -1039,6 +1233,7 @@ export type Mutation = {
   deleteStakePoolMetricsStake?: Maybe<DeleteStakePoolMetricsStakePayload>;
   deleteStakePoolTransactions?: Maybe<DeleteStakePoolTransactionsPayload>;
   deleteThePoolsMediaAssets?: Maybe<DeleteThePoolsMediaAssetsPayload>;
+  updateBlock?: Maybe<UpdateBlockPayload>;
   updateExtendedStakePoolMetadata?: Maybe<UpdateExtendedStakePoolMetadataPayload>;
   updateExtendedStakePoolMetadataFields?: Maybe<UpdateExtendedStakePoolMetadataFieldsPayload>;
   updateFraction?: Maybe<UpdateFractionPayload>;
@@ -1055,6 +1250,12 @@ export type Mutation = {
   updateStakePoolMetricsStake?: Maybe<UpdateStakePoolMetricsStakePayload>;
   updateStakePoolTransactions?: Maybe<UpdateStakePoolTransactionsPayload>;
   updateThePoolsMediaAssets?: Maybe<UpdateThePoolsMediaAssetsPayload>;
+};
+
+
+export type MutationAddBlockArgs = {
+  input: Array<AddBlockInput>;
+  upsert?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -1141,6 +1342,11 @@ export type MutationAddThePoolsMediaAssetsArgs = {
 };
 
 
+export type MutationDeleteBlockArgs = {
+  filter: BlockFilter;
+};
+
+
 export type MutationDeleteExtendedStakePoolMetadataArgs = {
   filter: ExtendedStakePoolMetadataFilter;
 };
@@ -1218,6 +1424,11 @@ export type MutationDeleteStakePoolTransactionsArgs = {
 
 export type MutationDeleteThePoolsMediaAssetsArgs = {
   filter: ThePoolsMediaAssetsFilter;
+};
+
+
+export type MutationUpdateBlockArgs = {
+  input: UpdateBlockInput;
 };
 
 
@@ -1431,6 +1642,7 @@ export type PoolContactDataRef = {
 
 export type Query = {
   __typename?: 'Query';
+  aggregateBlock?: Maybe<BlockAggregateResult>;
   aggregateExtendedStakePoolMetadata?: Maybe<ExtendedStakePoolMetadataAggregateResult>;
   aggregateExtendedStakePoolMetadataFields?: Maybe<ExtendedStakePoolMetadataFieldsAggregateResult>;
   aggregateFraction?: Maybe<FractionAggregateResult>;
@@ -1447,9 +1659,11 @@ export type Query = {
   aggregateStakePoolMetricsStake?: Maybe<StakePoolMetricsStakeAggregateResult>;
   aggregateStakePoolTransactions?: Maybe<StakePoolTransactionsAggregateResult>;
   aggregateThePoolsMediaAssets?: Maybe<ThePoolsMediaAssetsAggregateResult>;
+  getBlock?: Maybe<Block>;
   getExtendedStakePoolMetadataFields?: Maybe<ExtendedStakePoolMetadataFields>;
   getStakePool?: Maybe<StakePool>;
   getStakePoolMetadata?: Maybe<StakePoolMetadata>;
+  queryBlock?: Maybe<Array<Maybe<Block>>>;
   queryExtendedStakePoolMetadata?: Maybe<Array<Maybe<ExtendedStakePoolMetadata>>>;
   queryExtendedStakePoolMetadataFields?: Maybe<Array<Maybe<ExtendedStakePoolMetadataFields>>>;
   queryFraction?: Maybe<Array<Maybe<Fraction>>>;
@@ -1466,6 +1680,11 @@ export type Query = {
   queryStakePoolMetricsStake?: Maybe<Array<Maybe<StakePoolMetricsStake>>>;
   queryStakePoolTransactions?: Maybe<Array<Maybe<StakePoolTransactions>>>;
   queryThePoolsMediaAssets?: Maybe<Array<Maybe<ThePoolsMediaAssets>>>;
+};
+
+
+export type QueryAggregateBlockArgs = {
+  filter?: Maybe<BlockFilter>;
 };
 
 
@@ -1549,6 +1768,11 @@ export type QueryAggregateThePoolsMediaAssetsArgs = {
 };
 
 
+export type QueryGetBlockArgs = {
+  hash: Scalars['String'];
+};
+
+
 export type QueryGetExtendedStakePoolMetadataFieldsArgs = {
   id: Scalars['String'];
 };
@@ -1561,6 +1785,14 @@ export type QueryGetStakePoolArgs = {
 
 export type QueryGetStakePoolMetadataArgs = {
   stakePoolId: Scalars['String'];
+};
+
+
+export type QueryQueryBlockArgs = {
+  filter?: Maybe<BlockFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<BlockOrder>;
 };
 
 
@@ -2516,6 +2748,26 @@ export type ThePoolsMediaAssetsRef = {
   logo_svg?: Maybe<Scalars['String']>;
 };
 
+export type UpdateBlockInput = {
+  filter: BlockFilter;
+  remove?: Maybe<BlockPatch>;
+  set?: Maybe<BlockPatch>;
+};
+
+export type UpdateBlockPayload = {
+  __typename?: 'UpdateBlockPayload';
+  block?: Maybe<Array<Maybe<Block>>>;
+  numUids?: Maybe<Scalars['Int']>;
+};
+
+
+export type UpdateBlockPayloadBlockArgs = {
+  filter?: Maybe<BlockFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<BlockOrder>;
+};
+
 export type UpdateExtendedStakePoolMetadataFieldsInput = {
   filter: ExtendedStakePoolMetadataFieldsFilter;
   remove?: Maybe<ExtendedStakePoolMetadataFieldsPatch>;
@@ -2856,6 +3108,11 @@ export type StakePoolsQueryVariables = Exact<{
 
 export type StakePoolsQuery = { __typename?: 'Query', queryStakePool?: Array<{ __typename?: 'StakePool', id: string, hexId: string, status: StakePoolStatus, owners: Array<string>, cost: string, vrf: string, rewardAccount: string, pledge: string, margin: { __typename?: 'Fraction', numerator: number, denominator: number }, relays: Array<{ __typename: 'RelayByAddress', ipv4?: string | null | undefined, ipv6?: string | null | undefined, port?: number | null | undefined } | { __typename: 'RelayByName', hostname: string, port?: number | null | undefined } | { __typename: 'RelayByNameMultihost', dnsName: string }>, metrics: { __typename?: 'StakePoolMetrics', blocksCreated: number, livePledge: string, saturation: number, delegators: number, stake: { __typename?: 'StakePoolMetricsStake', live: string, active: string }, size: { __typename?: 'StakePoolMetricsSize', live: number, active: number } }, transactions: { __typename?: 'StakePoolTransactions', registration: Array<string>, retirement: Array<string> }, metadataJson?: { __typename?: 'StakePoolMetadataJson', hash: string, url: string } | null | undefined, metadata?: { __typename?: 'StakePoolMetadata', ticker: string, name: string, description: string, homepage: string, extDataUrl?: string | null | undefined, extSigUrl?: string | null | undefined, extVkey?: string | null | undefined, ext?: { __typename?: 'ExtendedStakePoolMetadata', serial: number, pool: { __typename?: 'ExtendedStakePoolMetadataFields', id: string, country?: string | null | undefined, status?: ExtendedPoolStatus | null | undefined, contact?: { __typename?: 'PoolContactData', primary: string, email?: string | null | undefined, facebook?: string | null | undefined, github?: string | null | undefined, feed?: string | null | undefined, telegram?: string | null | undefined, twitter?: string | null | undefined } | null | undefined, media_assets?: { __typename?: 'ThePoolsMediaAssets', icon_png_64x64: string, logo_png?: string | null | undefined, logo_svg?: string | null | undefined, color_fg?: string | null | undefined, color_bg?: string | null | undefined } | null | undefined, itn?: { __typename?: 'ITNVerification', owner: string, witness: string } | null | undefined } } | null | undefined } | null | undefined } | null | undefined> | null | undefined };
 
+export type TipQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TipQuery = { __typename?: 'Query', queryBlock?: Array<{ __typename?: 'Block', slot: number, hash: string, blockNo: number } | null | undefined> | null | undefined };
+
 export const AllStakePoolFieldsFragmentDoc = gql`
     fragment allStakePoolFields on StakePool {
   id
@@ -2964,6 +3221,15 @@ export const StakePoolsDocument = gql`
   }
 }
     ${AllStakePoolFieldsFragmentDoc}`;
+export const TipDocument = gql`
+    query Tip {
+  queryBlock(order: {desc: blockNo}, first: 1) {
+    slot
+    hash
+    blockNo
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -2977,6 +3243,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     StakePools(variables: StakePoolsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<StakePoolsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<StakePoolsQuery>(StakePoolsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'StakePools');
+    },
+    Tip(variables?: TipQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TipQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<TipQuery>(TipDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Tip');
     }
   };
 }
