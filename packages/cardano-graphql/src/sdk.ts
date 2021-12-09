@@ -27,6 +27,7 @@ export type Scalars = {
 export type AddBlockInput = {
   blockNo: Scalars['Int'];
   confirmations: Scalars['Int'];
+  date: Scalars['DateTime'];
   epoch: Scalars['Int'];
   epochSlot: Scalars['Int'];
   fees: Scalars['String'];
@@ -415,6 +416,7 @@ export type Block = {
   __typename?: 'Block';
   blockNo: Scalars['Int'];
   confirmations: Scalars['Int'];
+  date: Scalars['DateTime'];
   epoch: Scalars['Int'];
   epochSlot: Scalars['Int'];
   fees: Scalars['String'];
@@ -440,6 +442,8 @@ export type BlockAggregateResult = {
   confirmationsMin?: Maybe<Scalars['Int']>;
   confirmationsSum?: Maybe<Scalars['Int']>;
   count?: Maybe<Scalars['Int']>;
+  dateMax?: Maybe<Scalars['DateTime']>;
+  dateMin?: Maybe<Scalars['DateTime']>;
   epochAvg?: Maybe<Scalars['Float']>;
   epochMax?: Maybe<Scalars['Int']>;
   epochMin?: Maybe<Scalars['Int']>;
@@ -487,6 +491,7 @@ export type BlockFilter = {
 export enum BlockHasFilter {
   BlockNo = 'blockNo',
   Confirmations = 'confirmations',
+  Date = 'date',
   Epoch = 'epoch',
   EpochSlot = 'epochSlot',
   Fees = 'fees',
@@ -510,6 +515,7 @@ export type BlockOrder = {
 export enum BlockOrderable {
   BlockNo = 'blockNo',
   Confirmations = 'confirmations',
+  Date = 'date',
   Epoch = 'epoch',
   EpochSlot = 'epochSlot',
   Fees = 'fees',
@@ -527,6 +533,7 @@ export enum BlockOrderable {
 export type BlockPatch = {
   blockNo?: Maybe<Scalars['Int']>;
   confirmations?: Maybe<Scalars['Int']>;
+  date?: Maybe<Scalars['DateTime']>;
   epoch?: Maybe<Scalars['Int']>;
   epochSlot?: Maybe<Scalars['Int']>;
   fees?: Maybe<Scalars['String']>;
@@ -543,6 +550,7 @@ export type BlockPatch = {
 export type BlockRef = {
   blockNo?: Maybe<Scalars['Int']>;
   confirmations?: Maybe<Scalars['Int']>;
+  date?: Maybe<Scalars['DateTime']>;
   epoch?: Maybe<Scalars['Int']>;
   epochSlot?: Maybe<Scalars['Int']>;
   fees?: Maybe<Scalars['String']>;

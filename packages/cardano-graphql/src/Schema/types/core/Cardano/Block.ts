@@ -15,6 +15,7 @@ export class Block implements BlockWithPartialHeader {
   blockNo: Cardano.BlockNo;
   @Field(() => Int)
   slot: Cardano.Slot;
+  @Field()
   date: Date;
   @Field(() => Int)
   epoch: Cardano.Epoch;
