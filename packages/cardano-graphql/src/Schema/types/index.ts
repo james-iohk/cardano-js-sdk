@@ -1,2 +1,3 @@
-// Only export TypeGraphQL-decorated types
-export * from './core';
+export * from './StakePool';
+export * from './ExtendedStakePoolMetadataFields';
+export * from './Block';
