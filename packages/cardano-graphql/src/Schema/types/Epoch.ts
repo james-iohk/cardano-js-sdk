@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
+import { ActiveStake } from './ActiveStake';
 import { Block } from './Block';
 import { Cardano } from '@cardano-sdk/core';
 import { Directive, Field, Int, ObjectType } from 'type-graphql';
 import { Slot } from './Slot';
-import { StakePool } from './StakePool';
 
 @ObjectType()
 export class ProtocolParameters {
@@ -26,18 +26,6 @@ export class AdaPots {
   treasury: Cardano.Lovelace;
   @Field(() => String)
   utxo: Cardano.Lovelace;
-}
-
-@ObjectType()
-export class ActiveStake {
-  @Field(() => String)
-  address: Cardano.RewardAccount;
-  @Field(() => String)
-  quantity: Cardano.Lovelace;
-  @Field(() => Epoch)
-  epoch: Epoch;
-  @Field(() => StakePool)
-  stakePool: StakePool;
 }
 
 @ObjectType()
