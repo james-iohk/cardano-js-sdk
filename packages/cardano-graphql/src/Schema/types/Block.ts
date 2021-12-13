@@ -33,7 +33,7 @@ export class Block {
   @Field(() => String)
   fees: Cardano.Lovelace;
   @Field(() => String)
-  vrf: Cardano.VrfVkBech32;
+  vrf: Cardano.VrfVkBech32; // Review: is this the same as slotLeader.vrf? If so, could remove this
   @Field(() => Block)
   previousBlock?: Block;
   @Field(() => Block)

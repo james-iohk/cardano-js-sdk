@@ -8897,6 +8897,13 @@ export type WithinFilter = {
   polygon: PolygonRef;
 };
 
+export type BlocksByHashesQueryVariables = Exact<{
+  hashes: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type BlocksByHashesQuery = { __typename?: 'Query', queryBlock?: Array<{ __typename?: 'Block', size: number, totalOutput: string, fees: string, vrf: string, hash: string, blockNo: number, confirmations: number, slot: { __typename?: 'Slot', number: number, date: string, slotInEpoch: number }, slotLeader: { __typename?: 'StakePool', id: string }, transactionsAggregate?: { __typename?: 'TransactionAggregateResult', count?: number | null | undefined } | null | undefined, epoch: { __typename?: 'Epoch', number: number }, previousBlock: { __typename?: 'Block', hash: string }, nextBlock: { __typename?: 'Block', hash: string } } | null | undefined> | null | undefined };
+
 export type AllStakePoolFieldsFragment = { __typename?: 'StakePool', id: string, hexId: string, status: StakePoolStatus, owners: Array<string>, cost: string, vrf: string, rewardAccount: string, pledge: string, margin: { __typename?: 'Fraction', numerator: number, denominator: number }, relays: Array<{ __typename: 'RelayByAddress', ipv4?: string | null | undefined, ipv6?: string | null | undefined, port?: number | null | undefined } | { __typename: 'RelayByName', hostname: string, port?: number | null | undefined } | { __typename: 'RelayByNameMultihost', dnsName: string }>, metrics: { __typename?: 'StakePoolMetrics', blocksCreated: number, livePledge: string, saturation: number, delegators: number, stake: { __typename?: 'StakePoolMetricsStake', live: string, active: string }, size: { __typename?: 'StakePoolMetricsSize', live: number, active: number } }, transactions: { __typename?: 'StakePoolTransactions', registration: Array<string>, retirement: Array<string> }, metadataJson?: { __typename?: 'StakePoolMetadataJson', hash: string, url: string } | null | undefined, metadata?: { __typename?: 'StakePoolMetadata', ticker: string, name: string, description: string, homepage: string, extDataUrl?: string | null | undefined, extSigUrl?: string | null | undefined, extVkey?: string | null | undefined, ext?: { __typename?: 'ExtendedStakePoolMetadata', serial: number, pool: { __typename?: 'ExtendedStakePoolMetadataFields', id: string, country?: string | null | undefined, status?: ExtendedPoolStatus | null | undefined, contact?: { __typename?: 'PoolContactData', primary: string, email?: string | null | undefined, facebook?: string | null | undefined, github?: string | null | undefined, feed?: string | null | undefined, telegram?: string | null | undefined, twitter?: string | null | undefined } | null | undefined, media_assets?: { __typename?: 'ThePoolsMediaAssets', icon_png_64x64: string, logo_png?: string | null | undefined, logo_svg?: string | null | undefined, color_fg?: string | null | undefined, color_bg?: string | null | undefined } | null | undefined, itn?: { __typename?: 'ITNVerification', owner: string, witness: string } | null | undefined } } | null | undefined } | null | undefined };
 
 export type StakePoolsByMetadataQueryVariables = Exact<{
@@ -9009,6 +9016,39 @@ export const AllStakePoolFieldsFragmentDoc = gql`
   }
 }
     `;
+export const BlocksByHashesDocument = gql`
+    query BlocksByHashes($hashes: [String!]!) {
+  queryBlock(filter: {hash: {in: $hashes}}) {
+    slot {
+      number
+      date
+      slotInEpoch
+    }
+    slotLeader {
+      id
+    }
+    size
+    transactionsAggregate {
+      count
+    }
+    totalOutput
+    fees
+    vrf
+    epoch {
+      number
+    }
+    hash
+    blockNo
+    previousBlock {
+      hash
+    }
+    nextBlock {
+      hash
+    }
+    confirmations
+  }
+}
+    `;
 export const StakePoolsByMetadataDocument = gql`
     query StakePoolsByMetadata($query: String!, $omit: [String!] = ["NEED_THIS_BECAUSE_IN_OPERATOR_WONT_WORK_WITH_EMPTY_ARR"]) {
   queryStakePoolMetadata(
@@ -9046,6 +9086,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    BlocksByHashes(variables: BlocksByHashesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<BlocksByHashesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<BlocksByHashesQuery>(BlocksByHashesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'BlocksByHashes');
+    },
     StakePoolsByMetadata(variables: StakePoolsByMetadataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<StakePoolsByMetadataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<StakePoolsByMetadataQuery>(StakePoolsByMetadataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'StakePoolsByMetadata');
     },
