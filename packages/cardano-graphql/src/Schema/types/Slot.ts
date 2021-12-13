@@ -1,5 +1,5 @@
+import { Block } from './Block';
 import { Directive, Field, Int, ObjectType } from 'type-graphql';
-import { StakePool } from './StakePool';
 
 // Review: not present in original cardano-graphql schema
 @ObjectType()
@@ -11,6 +11,6 @@ export class Slot {
   slotInEpoch: number;
   @Field()
   date: Date;
-  @Field(() => StakePool, { nullable: true })
-  leader: StakePool;
+  @Field(() => Block, { nullable: true })
+  block?: Block;
 }

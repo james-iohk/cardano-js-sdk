@@ -1,10 +1,10 @@
 // Review: seems like it doesn't include actual script in original cardano-graphql schema.
+// Should we add it?
 
 import { AuxiliaryDataBody } from './AuxiliaryDataBody';
 import { Cardano } from '@cardano-sdk/core';
 import { Directive, Field, Int, ObjectType } from 'type-graphql';
 
-// Should we add it?
 @ObjectType()
 export class Script {
   @Directive('@id')

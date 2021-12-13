@@ -21,14 +21,18 @@ describe('CardanoGraphQLWalletProvider', () => {
     const tip = {
       blockNo: 1,
       hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cad',
-      slot: 2
+      slot: { number: 2 }
     };
 
     it('makes a graphql query and coerces result to core types', async () => {
       sdk.Tip.mockResolvedValueOnce({
         queryBlock: [tip]
       });
-      expect(await provider.ledgerTip()).toEqual(tip);
+      expect(await provider.ledgerTip()).toEqual({
+        blockNo: 1,
+        hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cad',
+        slot: 2
+      });
     });
 
     it('throws ProviderError{NotFound} on empty response', async () => {

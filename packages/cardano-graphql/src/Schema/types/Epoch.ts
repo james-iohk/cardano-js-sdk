@@ -3,12 +3,8 @@ import { ActiveStake } from './ActiveStake';
 import { Block } from './Block';
 import { Cardano } from '@cardano-sdk/core';
 import { Directive, Field, Int, ObjectType } from 'type-graphql';
+import { ProtocolParameters } from './ProtocolParameters';
 import { Slot } from './Slot';
-
-@ObjectType()
-export class ProtocolParameters {
-  // TODO
-}
 
 @ObjectType()
 export class AdaPots {

@@ -1,9 +1,10 @@
 /* eslint-disable no-use-before-define */
 import { AnyMetadatum, Metadatum } from './Metadatum';
 import { AuxiliaryData } from './AuxiliaryData';
-import { Directive, Field } from 'type-graphql';
+import { Directive, Field, ObjectType } from 'type-graphql';
 import { Script } from './Script';
 
+@ObjectType()
 export class AuxiliaryDataBody {
   @Field(() => [Metadatum], { nullable: true })
   blob?: AnyMetadatum[];

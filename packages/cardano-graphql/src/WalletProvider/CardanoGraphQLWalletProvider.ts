@@ -12,7 +12,8 @@ export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider>
       if (!tipResponse) throw new ProviderError(ProviderFailure.InvalidResponse);
       return {
         ...tipResponse,
-        hash: Cardano.BlockId(tipResponse.hash)
+        hash: Cardano.BlockId(tipResponse.hash),
+        slot: tipResponse.slot.number
       };
     }
   } as WalletProvider);
