@@ -56,16 +56,18 @@ describe('CardanoGraphQLWalletProvider', () => {
       epoch: { number: 5 },
       fees: '123',
       hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cad',
+      issuer: {
+        id: 'pool1zuevzm3xlrhmwjw87ec38mzs02tlkwec9wxpgafcaykmwg7efhh',
+        vrf: 'vrf_vk19j362pkr4t9y0m3qxgmrv0365vd7c4ze03ny4jh84q8agjy4ep4s99zvg8'
+      },
       nextBlock: { hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cae' },
       previousBlock: { hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99caa' },
       size: 6,
       slot: { date: '2019-10-12T07:20:50.52Z', number: 2, slotInEpoch: 3 },
-      slotLeader: { id: 'pool1zuevzm3xlrhmwjw87ec38mzs02tlkwec9wxpgafcaykmwg7efhh' },
       totalOutput: '700',
       transactionsAggregate: {
         count: 3
-      },
-      vrf: 'vrf_vk19j362pkr4t9y0m3qxgmrv0365vd7c4ze03ny4jh84q8agjy4ep4s99zvg8'
+      }
     } as NonNullable<NonNullable<BlocksByHashesQuery['queryBlock']>[0]>;
     const blockHash = Cardano.BlockId(block.hash);
 
@@ -92,10 +94,10 @@ describe('CardanoGraphQLWalletProvider', () => {
         nextBlock: block.nextBlock.hash,
         previousBlock: block.previousBlock.hash,
         size: block.size,
-        slotLeader: block.slotLeader.id,
+        slotLeader: block.issuer.id,
         totalOutput: BigInt(block.totalOutput),
         txCount: block.transactionsAggregate!.count,
-        vrf: block.vrf
+        vrf: block.issuer.vrf
       });
     });
 
@@ -104,7 +106,6 @@ describe('CardanoGraphQLWalletProvider', () => {
       expect(await provider.queryBlocksByHashes([blockHash])).toEqual([]);
     });
 
-    // Review: should this be interpreted as invalid response instead?
     it('assumes there are no transactions if transactionsAggregate is undefined', async () => {
       sdk.BlocksByHashes.mockResolvedValueOnce({ queryBlock: [{ ...block, transactionsAggregate: undefined }] });
       const [response] = await provider.queryBlocksByHashes([blockHash]);

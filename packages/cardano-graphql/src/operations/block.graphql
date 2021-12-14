@@ -5,8 +5,9 @@ query BlocksByHashes($hashes: [String!]!) {
       date
       slotInEpoch
     }
-    slotLeader {
+    issuer {
       id
+      vrf
     }
     size
     transactionsAggregate {
@@ -14,7 +15,6 @@ query BlocksByHashes($hashes: [String!]!) {
     }
     totalOutput
     fees
-    vrf
     epoch {
       number
     }

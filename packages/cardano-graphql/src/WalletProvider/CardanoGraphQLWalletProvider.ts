@@ -11,7 +11,7 @@ export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider>
       const [tipResponse] = queryBlock;
       if (!tipResponse) throw new ProviderError(ProviderFailure.InvalidResponse);
       return {
-        ...tipResponse,
+        blockNo: tipResponse.blockNo,
         hash: Cardano.BlockId(tipResponse.hash),
         slot: tipResponse.slot.number
       };
@@ -34,10 +34,10 @@ export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider>
           nextBlock: Cardano.BlockId(block.nextBlock.hash),
           previousBlock: Cardano.BlockId(block.previousBlock.hash),
           size: block.size,
-          slotLeader: Cardano.PoolId(block.slotLeader.id),
+          slotLeader: Cardano.PoolId(block.issuer.id),
           totalOutput: BigInt(block.totalOutput),
           txCount: block.transactionsAggregate?.count || 0,
-          vrf: Cardano.VrfVkBech32(block.vrf)
+          vrf: Cardano.VrfVkBech32(block.issuer.vrf)
         })
       );
     }
