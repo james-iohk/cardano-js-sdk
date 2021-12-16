@@ -363,7 +363,7 @@ export type AddAssetPayloadAssetArgs = {
 
 export type AddAuxiliaryDataBodyInput = {
   auxiliaryData: AuxiliaryDataRef;
-  blob?: Maybe<Array<MetadatumRef>>;
+  blob?: Maybe<Array<KeyValueMetadatumRef>>;
   scripts?: Maybe<Array<ScriptRef>>;
 };
 
@@ -433,8 +433,7 @@ export type AddBlockPayloadBlockArgs = {
 };
 
 export type AddBytesMetadatumInput = {
-  value: Scalars['String'];
-  valueType: MetadatumStringType;
+  bytes: Scalars['String'];
 };
 
 export type AddBytesMetadatumPayload = {
@@ -637,7 +636,7 @@ export type AddItnVerificationPayloadITnVerificationArgs = {
 };
 
 export type AddIntegerMetadatumInput = {
-  value: Scalars['Int'];
+  int: Scalars['Int'];
 };
 
 export type AddIntegerMetadatumPayload = {
@@ -674,8 +673,7 @@ export type AddKeyValueMetadatumPayloadKeyValueMetadatumArgs = {
 };
 
 export type AddMetadatumArrayInput = {
-  value: Array<MetadatumRef>;
-  valueType: MetadatumArrayType;
+  array: Array<MetadatumRef>;
 };
 
 export type AddMetadatumArrayPayload = {
@@ -692,8 +690,7 @@ export type AddMetadatumArrayPayloadMetadatumArrayArgs = {
 };
 
 export type AddMetadatumMapInput = {
-  value: Array<KeyValueMetadatumRef>;
-  valueType: MetadatumArrayType;
+  map: Array<KeyValueMetadatumRef>;
 };
 
 export type AddMetadatumMapPayload = {
@@ -1006,6 +1003,27 @@ export type AddScriptPayloadScriptArgs = {
   order?: Maybe<ScriptOrder>;
 };
 
+export type AddSignatureInput = {
+  /** hex-encoded Ed25519 public key */
+  publicKey: Scalars['String'];
+  /** hex-encoded Ed25519 signature */
+  signature: Scalars['String'];
+};
+
+export type AddSignaturePayload = {
+  __typename?: 'AddSignaturePayload';
+  numUids?: Maybe<Scalars['Int']>;
+  signature?: Maybe<Array<Maybe<Signature>>>;
+};
+
+
+export type AddSignaturePayloadSignatureArgs = {
+  filter?: Maybe<SignatureFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<SignatureOrder>;
+};
+
 export type AddSlotInput = {
   block?: Maybe<BlockRef>;
   date: Scalars['DateTime'];
@@ -1192,8 +1210,7 @@ export type AddStakePoolTransactionsPayloadStakePoolTransactionsArgs = {
 };
 
 export type AddStringMetadatumInput = {
-  value: Scalars['String'];
-  valueType: MetadatumStringType;
+  string: Scalars['String'];
 };
 
 export type AddStringMetadatumPayload = {
@@ -1276,17 +1293,18 @@ export type AddTokenPayloadTokenArgs = {
 export type AddTransactionInput = {
   auxiliaryData?: Maybe<AuxiliaryDataRef>;
   block: BlockRef;
-  blockIndex: Scalars['Int'];
   collateral?: Maybe<Array<TransactionInputRef>>;
   deposit: Scalars['Int64'];
   fee: Scalars['Int64'];
   hash: Scalars['String'];
+  index: Scalars['Int'];
   inputs: Array<TransactionInputRef>;
   invalidBefore?: Maybe<Scalars['Int']>;
   invalidHereafter?: Maybe<Scalars['Int']>;
   mint?: Maybe<Array<TokenRef>>;
   outputs: Array<TransactionOutputRef>;
   redeemers?: Maybe<Array<RedeemerRef>>;
+  signatures: Array<SignatureRef>;
   size: Scalars['Int64'];
   totalOutputCoin: Scalars['Int64'];
   validContract: Scalars['Boolean'];
@@ -1318,6 +1336,8 @@ export type AddTransactionInputPayloadTransactionInputArgs = {
 
 export type AddTransactionOutputInput = {
   address: AddressRef;
+  /** hex-encoded 32 byte hash */
+  datum?: Maybe<Scalars['String']>;
   index: Scalars['Int'];
   transaction: TransactionRef;
   value: ValueRef;
@@ -1593,7 +1613,8 @@ export type AuxiliaryDataAggregateResult = {
 export type AuxiliaryDataBody = {
   __typename?: 'AuxiliaryDataBody';
   auxiliaryData: AuxiliaryData;
-  blob?: Maybe<Array<Metadatum>>;
+  blob?: Maybe<Array<KeyValueMetadatum>>;
+  blobAggregate?: Maybe<KeyValueMetadatumAggregateResult>;
   scripts?: Maybe<Array<Script>>;
   scriptsAggregate?: Maybe<ScriptAggregateResult>;
 };
@@ -1605,9 +1626,15 @@ export type AuxiliaryDataBodyAuxiliaryDataArgs = {
 
 
 export type AuxiliaryDataBodyBlobArgs = {
-  filter?: Maybe<MetadatumFilter>;
+  filter?: Maybe<KeyValueMetadatumFilter>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<KeyValueMetadatumOrder>;
+};
+
+
+export type AuxiliaryDataBodyBlobAggregateArgs = {
+  filter?: Maybe<KeyValueMetadatumFilter>;
 };
 
 
@@ -1643,13 +1670,13 @@ export enum AuxiliaryDataBodyHasFilter {
 
 export type AuxiliaryDataBodyPatch = {
   auxiliaryData?: Maybe<AuxiliaryDataRef>;
-  blob?: Maybe<Array<MetadatumRef>>;
+  blob?: Maybe<Array<KeyValueMetadatumRef>>;
   scripts?: Maybe<Array<ScriptRef>>;
 };
 
 export type AuxiliaryDataBodyRef = {
   auxiliaryData?: Maybe<AuxiliaryDataRef>;
-  blob?: Maybe<Array<MetadatumRef>>;
+  blob?: Maybe<Array<KeyValueMetadatumRef>>;
   scripts?: Maybe<Array<ScriptRef>>;
 };
 
@@ -1864,15 +1891,14 @@ export type BlockRef = {
 
 export type BytesMetadatum = {
   __typename?: 'BytesMetadatum';
-  value: Scalars['String'];
-  valueType: MetadatumStringType;
+  bytes: Scalars['String'];
 };
 
 export type BytesMetadatumAggregateResult = {
   __typename?: 'BytesMetadatumAggregateResult';
+  bytesMax?: Maybe<Scalars['String']>;
+  bytesMin?: Maybe<Scalars['String']>;
   count?: Maybe<Scalars['Int']>;
-  valueMax?: Maybe<Scalars['String']>;
-  valueMin?: Maybe<Scalars['String']>;
 };
 
 export type BytesMetadatumFilter = {
@@ -1883,8 +1909,7 @@ export type BytesMetadatumFilter = {
 };
 
 export enum BytesMetadatumHasFilter {
-  Value = 'value',
-  ValueType = 'valueType'
+  Bytes = 'bytes'
 }
 
 export type BytesMetadatumOrder = {
@@ -1894,17 +1919,15 @@ export type BytesMetadatumOrder = {
 };
 
 export enum BytesMetadatumOrderable {
-  Value = 'value'
+  Bytes = 'bytes'
 }
 
 export type BytesMetadatumPatch = {
-  value?: Maybe<Scalars['String']>;
-  valueType?: Maybe<MetadatumStringType>;
+  bytes?: Maybe<Scalars['String']>;
 };
 
 export type BytesMetadatumRef = {
-  value?: Maybe<Scalars['String']>;
-  valueType?: Maybe<MetadatumStringType>;
+  bytes?: Maybe<Scalars['String']>;
 };
 
 export type CoinSupply = {
@@ -2607,6 +2630,21 @@ export type DeleteScriptPayloadScriptArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   order?: Maybe<ScriptOrder>;
+};
+
+export type DeleteSignaturePayload = {
+  __typename?: 'DeleteSignaturePayload';
+  msg?: Maybe<Scalars['String']>;
+  numUids?: Maybe<Scalars['Int']>;
+  signature?: Maybe<Array<Maybe<Signature>>>;
+};
+
+
+export type DeleteSignaturePayloadSignatureArgs = {
+  filter?: Maybe<SignatureFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<SignatureOrder>;
 };
 
 export type DeleteSlotPayload = {
@@ -3383,16 +3421,16 @@ export type IntRange = {
 
 export type IntegerMetadatum = {
   __typename?: 'IntegerMetadatum';
-  value: Scalars['Int'];
+  int: Scalars['Int'];
 };
 
 export type IntegerMetadatumAggregateResult = {
   __typename?: 'IntegerMetadatumAggregateResult';
   count?: Maybe<Scalars['Int']>;
-  valueAvg?: Maybe<Scalars['Float']>;
-  valueMax?: Maybe<Scalars['Int']>;
-  valueMin?: Maybe<Scalars['Int']>;
-  valueSum?: Maybe<Scalars['Int']>;
+  intAvg?: Maybe<Scalars['Float']>;
+  intMax?: Maybe<Scalars['Int']>;
+  intMin?: Maybe<Scalars['Int']>;
+  intSum?: Maybe<Scalars['Int']>;
 };
 
 export type IntegerMetadatumFilter = {
@@ -3403,7 +3441,7 @@ export type IntegerMetadatumFilter = {
 };
 
 export enum IntegerMetadatumHasFilter {
-  Value = 'value'
+  Int = 'int'
 }
 
 export type IntegerMetadatumOrder = {
@@ -3413,15 +3451,15 @@ export type IntegerMetadatumOrder = {
 };
 
 export enum IntegerMetadatumOrderable {
-  Value = 'value'
+  Int = 'int'
 }
 
 export type IntegerMetadatumPatch = {
-  value?: Maybe<Scalars['Int']>;
+  int?: Maybe<Scalars['Int']>;
 };
 
 export type IntegerMetadatumRef = {
-  value?: Maybe<Scalars['Int']>;
+  int?: Maybe<Scalars['Int']>;
 };
 
 export type IntersectsFilter = {
@@ -3483,12 +3521,11 @@ export type Metadatum = BytesMetadatum | IntegerMetadatum | MetadatumArray | Met
 
 export type MetadatumArray = {
   __typename?: 'MetadatumArray';
-  value: Array<Metadatum>;
-  valueType: MetadatumArrayType;
+  array: Array<Metadatum>;
 };
 
 
-export type MetadatumArrayValueArgs = {
+export type MetadatumArrayArrayArgs = {
   filter?: Maybe<MetadatumFilter>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -3507,24 +3544,16 @@ export type MetadatumArrayFilter = {
 };
 
 export enum MetadatumArrayHasFilter {
-  Value = 'value',
-  ValueType = 'valueType'
+  Array = 'array'
 }
 
 export type MetadatumArrayPatch = {
-  value?: Maybe<Array<MetadatumRef>>;
-  valueType?: Maybe<MetadatumArrayType>;
+  array?: Maybe<Array<MetadatumRef>>;
 };
 
 export type MetadatumArrayRef = {
-  value?: Maybe<Array<MetadatumRef>>;
-  valueType?: Maybe<MetadatumArrayType>;
+  array?: Maybe<Array<MetadatumRef>>;
 };
-
-export enum MetadatumArrayType {
-  Array = 'array',
-  Map = 'map'
-}
 
 export type MetadatumFilter = {
   bytesMetadatumFilter?: Maybe<BytesMetadatumFilter>;
@@ -3537,13 +3566,12 @@ export type MetadatumFilter = {
 
 export type MetadatumMap = {
   __typename?: 'MetadatumMap';
-  value: Array<KeyValueMetadatum>;
-  valueAggregate?: Maybe<KeyValueMetadatumAggregateResult>;
-  valueType: MetadatumArrayType;
+  map: Array<KeyValueMetadatum>;
+  mapAggregate?: Maybe<KeyValueMetadatumAggregateResult>;
 };
 
 
-export type MetadatumMapValueArgs = {
+export type MetadatumMapMapArgs = {
   filter?: Maybe<KeyValueMetadatumFilter>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -3551,7 +3579,7 @@ export type MetadatumMapValueArgs = {
 };
 
 
-export type MetadatumMapValueAggregateArgs = {
+export type MetadatumMapMapAggregateArgs = {
   filter?: Maybe<KeyValueMetadatumFilter>;
 };
 
@@ -3568,18 +3596,15 @@ export type MetadatumMapFilter = {
 };
 
 export enum MetadatumMapHasFilter {
-  Value = 'value',
-  ValueType = 'valueType'
+  Map = 'map'
 }
 
 export type MetadatumMapPatch = {
-  value?: Maybe<Array<KeyValueMetadatumRef>>;
-  valueType?: Maybe<MetadatumArrayType>;
+  map?: Maybe<Array<KeyValueMetadatumRef>>;
 };
 
 export type MetadatumMapRef = {
-  value?: Maybe<Array<KeyValueMetadatumRef>>;
-  valueType?: Maybe<MetadatumArrayType>;
+  map?: Maybe<Array<KeyValueMetadatumRef>>;
 };
 
 export type MetadatumRef = {
@@ -3589,11 +3614,6 @@ export type MetadatumRef = {
   metadatumMapRef?: Maybe<MetadatumMapRef>;
   stringMetadatumRef?: Maybe<StringMetadatumRef>;
 };
-
-export enum MetadatumStringType {
-  Bytes = 'bytes',
-  Other = 'other'
-}
 
 export enum MetadatumType {
   BytesMetadatum = 'BytesMetadatum',
@@ -3653,6 +3673,7 @@ export type Mutation = {
   addRelayByNameMultihost?: Maybe<AddRelayByNameMultihostPayload>;
   addRewardAccount?: Maybe<AddRewardAccountPayload>;
   addScript?: Maybe<AddScriptPayload>;
+  addSignature?: Maybe<AddSignaturePayload>;
   addSlot?: Maybe<AddSlotPayload>;
   addStakePool?: Maybe<AddStakePoolPayload>;
   addStakePoolMetadata?: Maybe<AddStakePoolMetadataPayload>;
@@ -3704,6 +3725,7 @@ export type Mutation = {
   deleteRelayByNameMultihost?: Maybe<DeleteRelayByNameMultihostPayload>;
   deleteRewardAccount?: Maybe<DeleteRewardAccountPayload>;
   deleteScript?: Maybe<DeleteScriptPayload>;
+  deleteSignature?: Maybe<DeleteSignaturePayload>;
   deleteSlot?: Maybe<DeleteSlotPayload>;
   deleteStakePool?: Maybe<DeleteStakePoolPayload>;
   deleteStakePoolMetadata?: Maybe<DeleteStakePoolMetadataPayload>;
@@ -3755,6 +3777,7 @@ export type Mutation = {
   updateRelayByNameMultihost?: Maybe<UpdateRelayByNameMultihostPayload>;
   updateRewardAccount?: Maybe<UpdateRewardAccountPayload>;
   updateScript?: Maybe<UpdateScriptPayload>;
+  updateSignature?: Maybe<UpdateSignaturePayload>;
   updateSlot?: Maybe<UpdateSlotPayload>;
   updateStakePool?: Maybe<UpdateStakePoolPayload>;
   updateStakePoolMetadata?: Maybe<UpdateStakePoolMetadataPayload>;
@@ -3946,6 +3969,11 @@ export type MutationAddRewardAccountArgs = {
 export type MutationAddScriptArgs = {
   input: Array<AddScriptInput>;
   upsert?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type MutationAddSignatureArgs = {
+  input: Array<AddSignatureInput>;
 };
 
 
@@ -4208,6 +4236,11 @@ export type MutationDeleteScriptArgs = {
 };
 
 
+export type MutationDeleteSignatureArgs = {
+  filter: SignatureFilter;
+};
+
+
 export type MutationDeleteSlotArgs = {
   filter: SlotFilter;
 };
@@ -4460,6 +4493,11 @@ export type MutationUpdateRewardAccountArgs = {
 
 export type MutationUpdateScriptArgs = {
   input: UpdateScriptInput;
+};
+
+
+export type MutationUpdateSignatureArgs = {
+  input: UpdateSignatureInput;
 };
 
 
@@ -5398,6 +5436,7 @@ export type Query = {
   aggregateRelayByNameMultihost?: Maybe<RelayByNameMultihostAggregateResult>;
   aggregateRewardAccount?: Maybe<RewardAccountAggregateResult>;
   aggregateScript?: Maybe<ScriptAggregateResult>;
+  aggregateSignature?: Maybe<SignatureAggregateResult>;
   aggregateSlot?: Maybe<SlotAggregateResult>;
   aggregateStakePool?: Maybe<StakePoolAggregateResult>;
   aggregateStakePoolMetadata?: Maybe<StakePoolMetadataAggregateResult>;
@@ -5457,6 +5496,7 @@ export type Query = {
   queryRelayByNameMultihost?: Maybe<Array<Maybe<RelayByNameMultihost>>>;
   queryRewardAccount?: Maybe<Array<Maybe<RewardAccount>>>;
   queryScript?: Maybe<Array<Maybe<Script>>>;
+  querySignature?: Maybe<Array<Maybe<Signature>>>;
   querySlot?: Maybe<Array<Maybe<Slot>>>;
   queryStakePool?: Maybe<Array<Maybe<StakePool>>>;
   queryStakePoolMetadata?: Maybe<Array<Maybe<StakePoolMetadata>>>;
@@ -5644,6 +5684,11 @@ export type QueryAggregateRewardAccountArgs = {
 
 export type QueryAggregateScriptArgs = {
   filter?: Maybe<ScriptFilter>;
+};
+
+
+export type QueryAggregateSignatureArgs = {
+  filter?: Maybe<SignatureFilter>;
 };
 
 
@@ -6037,6 +6082,14 @@ export type QueryQueryScriptArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   order?: Maybe<ScriptOrder>;
+};
+
+
+export type QueryQuerySignatureArgs = {
+  filter?: Maybe<SignatureFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<SignatureOrder>;
 };
 
 
@@ -6603,6 +6656,60 @@ export enum SearchResultType {
   RelayByName = 'RelayByName',
   RelayByNameMultihost = 'RelayByNameMultihost'
 }
+
+export type Signature = {
+  __typename?: 'Signature';
+  /** hex-encoded Ed25519 public key */
+  publicKey: Scalars['String'];
+  /** hex-encoded Ed25519 signature */
+  signature: Scalars['String'];
+};
+
+export type SignatureAggregateResult = {
+  __typename?: 'SignatureAggregateResult';
+  count?: Maybe<Scalars['Int']>;
+  publicKeyMax?: Maybe<Scalars['String']>;
+  publicKeyMin?: Maybe<Scalars['String']>;
+  signatureMax?: Maybe<Scalars['String']>;
+  signatureMin?: Maybe<Scalars['String']>;
+};
+
+export type SignatureFilter = {
+  and?: Maybe<Array<Maybe<SignatureFilter>>>;
+  has?: Maybe<Array<Maybe<SignatureHasFilter>>>;
+  not?: Maybe<SignatureFilter>;
+  or?: Maybe<Array<Maybe<SignatureFilter>>>;
+};
+
+export enum SignatureHasFilter {
+  PublicKey = 'publicKey',
+  Signature = 'signature'
+}
+
+export type SignatureOrder = {
+  asc?: Maybe<SignatureOrderable>;
+  desc?: Maybe<SignatureOrderable>;
+  then?: Maybe<SignatureOrder>;
+};
+
+export enum SignatureOrderable {
+  PublicKey = 'publicKey',
+  Signature = 'signature'
+}
+
+export type SignaturePatch = {
+  /** hex-encoded Ed25519 public key */
+  publicKey?: Maybe<Scalars['String']>;
+  /** hex-encoded Ed25519 signature */
+  signature?: Maybe<Scalars['String']>;
+};
+
+export type SignatureRef = {
+  /** hex-encoded Ed25519 public key */
+  publicKey?: Maybe<Scalars['String']>;
+  /** hex-encoded Ed25519 signature */
+  signature?: Maybe<Scalars['String']>;
+};
 
 export type Slot = {
   __typename?: 'Slot';
@@ -7248,15 +7355,14 @@ export type StringHashFilter = {
 
 export type StringMetadatum = {
   __typename?: 'StringMetadatum';
-  value: Scalars['String'];
-  valueType: MetadatumStringType;
+  string: Scalars['String'];
 };
 
 export type StringMetadatumAggregateResult = {
   __typename?: 'StringMetadatumAggregateResult';
   count?: Maybe<Scalars['Int']>;
-  valueMax?: Maybe<Scalars['String']>;
-  valueMin?: Maybe<Scalars['String']>;
+  stringMax?: Maybe<Scalars['String']>;
+  stringMin?: Maybe<Scalars['String']>;
 };
 
 export type StringMetadatumFilter = {
@@ -7267,8 +7373,7 @@ export type StringMetadatumFilter = {
 };
 
 export enum StringMetadatumHasFilter {
-  Value = 'value',
-  ValueType = 'valueType'
+  String = 'string'
 }
 
 export type StringMetadatumOrder = {
@@ -7278,17 +7383,15 @@ export type StringMetadatumOrder = {
 };
 
 export enum StringMetadatumOrderable {
-  Value = 'value'
+  String = 'string'
 }
 
 export type StringMetadatumPatch = {
-  value?: Maybe<Scalars['String']>;
-  valueType?: Maybe<MetadatumStringType>;
+  string?: Maybe<Scalars['String']>;
 };
 
 export type StringMetadatumRef = {
-  value?: Maybe<Scalars['String']>;
-  valueType?: Maybe<MetadatumStringType>;
+  string?: Maybe<Scalars['String']>;
 };
 
 export type StringRange = {
@@ -7507,12 +7610,12 @@ export type Transaction = {
   __typename?: 'Transaction';
   auxiliaryData?: Maybe<AuxiliaryData>;
   block: Block;
-  blockIndex: Scalars['Int'];
   collateral?: Maybe<Array<TransactionInput>>;
   collateralAggregate?: Maybe<TransactionInputAggregateResult>;
   deposit: Scalars['Int64'];
   fee: Scalars['Int64'];
   hash: Scalars['String'];
+  index: Scalars['Int'];
   inputs: Array<TransactionInput>;
   inputsAggregate?: Maybe<TransactionInputAggregateResult>;
   invalidBefore?: Maybe<Scalars['Int']>;
@@ -7523,6 +7626,8 @@ export type Transaction = {
   outputsAggregate?: Maybe<TransactionOutputAggregateResult>;
   redeemers?: Maybe<Array<Redeemer>>;
   redeemersAggregate?: Maybe<RedeemerAggregateResult>;
+  signatures: Array<Signature>;
+  signaturesAggregate?: Maybe<SignatureAggregateResult>;
   size: Scalars['Int64'];
   totalOutputCoin: Scalars['Int64'];
   validContract: Scalars['Boolean'];
@@ -7606,6 +7711,19 @@ export type TransactionRedeemersAggregateArgs = {
 };
 
 
+export type TransactionSignaturesArgs = {
+  filter?: Maybe<SignatureFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<SignatureOrder>;
+};
+
+
+export type TransactionSignaturesAggregateArgs = {
+  filter?: Maybe<SignatureFilter>;
+};
+
+
 export type TransactionWithdrawalsArgs = {
   filter?: Maybe<WithdrawalFilter>;
   first?: Maybe<Scalars['Int']>;
@@ -7620,10 +7738,6 @@ export type TransactionWithdrawalsAggregateArgs = {
 
 export type TransactionAggregateResult = {
   __typename?: 'TransactionAggregateResult';
-  blockIndexAvg?: Maybe<Scalars['Float']>;
-  blockIndexMax?: Maybe<Scalars['Int']>;
-  blockIndexMin?: Maybe<Scalars['Int']>;
-  blockIndexSum?: Maybe<Scalars['Int']>;
   count?: Maybe<Scalars['Int']>;
   depositAvg?: Maybe<Scalars['Float']>;
   depositMax?: Maybe<Scalars['Int64']>;
@@ -7635,6 +7749,10 @@ export type TransactionAggregateResult = {
   feeSum?: Maybe<Scalars['Int64']>;
   hashMax?: Maybe<Scalars['String']>;
   hashMin?: Maybe<Scalars['String']>;
+  indexAvg?: Maybe<Scalars['Float']>;
+  indexMax?: Maybe<Scalars['Int']>;
+  indexMin?: Maybe<Scalars['Int']>;
+  indexSum?: Maybe<Scalars['Int']>;
   invalidBeforeAvg?: Maybe<Scalars['Float']>;
   invalidBeforeMax?: Maybe<Scalars['Int']>;
   invalidBeforeMin?: Maybe<Scalars['Int']>;
@@ -7664,17 +7782,18 @@ export type TransactionFilter = {
 export enum TransactionHasFilter {
   AuxiliaryData = 'auxiliaryData',
   Block = 'block',
-  BlockIndex = 'blockIndex',
   Collateral = 'collateral',
   Deposit = 'deposit',
   Fee = 'fee',
   Hash = 'hash',
+  Index = 'index',
   Inputs = 'inputs',
   InvalidBefore = 'invalidBefore',
   InvalidHereafter = 'invalidHereafter',
   Mint = 'mint',
   Outputs = 'outputs',
   Redeemers = 'redeemers',
+  Signatures = 'signatures',
   Size = 'size',
   TotalOutputCoin = 'totalOutputCoin',
   ValidContract = 'validContract',
@@ -7777,10 +7896,10 @@ export type TransactionOrder = {
 };
 
 export enum TransactionOrderable {
-  BlockIndex = 'blockIndex',
   Deposit = 'deposit',
   Fee = 'fee',
   Hash = 'hash',
+  Index = 'index',
   InvalidBefore = 'invalidBefore',
   InvalidHereafter = 'invalidHereafter',
   Size = 'size',
@@ -7790,6 +7909,8 @@ export enum TransactionOrderable {
 export type TransactionOutput = {
   __typename?: 'TransactionOutput';
   address: Address;
+  /** hex-encoded 32 byte hash */
+  datum?: Maybe<Scalars['String']>;
   index: Scalars['Int'];
   transaction: Transaction;
   value: Value;
@@ -7813,6 +7934,8 @@ export type TransactionOutputValueArgs = {
 export type TransactionOutputAggregateResult = {
   __typename?: 'TransactionOutputAggregateResult';
   count?: Maybe<Scalars['Int']>;
+  datumMax?: Maybe<Scalars['String']>;
+  datumMin?: Maybe<Scalars['String']>;
   indexAvg?: Maybe<Scalars['Float']>;
   indexMax?: Maybe<Scalars['Int']>;
   indexMin?: Maybe<Scalars['Int']>;
@@ -7828,6 +7951,7 @@ export type TransactionOutputFilter = {
 
 export enum TransactionOutputHasFilter {
   Address = 'address',
+  Datum = 'datum',
   Index = 'index',
   Transaction = 'transaction',
   Value = 'value'
@@ -7840,11 +7964,14 @@ export type TransactionOutputOrder = {
 };
 
 export enum TransactionOutputOrderable {
+  Datum = 'datum',
   Index = 'index'
 }
 
 export type TransactionOutputPatch = {
   address?: Maybe<AddressRef>;
+  /** hex-encoded 32 byte hash */
+  datum?: Maybe<Scalars['String']>;
   index?: Maybe<Scalars['Int']>;
   transaction?: Maybe<TransactionRef>;
   value?: Maybe<ValueRef>;
@@ -7852,6 +7979,8 @@ export type TransactionOutputPatch = {
 
 export type TransactionOutputRef = {
   address?: Maybe<AddressRef>;
+  /** hex-encoded 32 byte hash */
+  datum?: Maybe<Scalars['String']>;
   index?: Maybe<Scalars['Int']>;
   transaction?: Maybe<TransactionRef>;
   value?: Maybe<ValueRef>;
@@ -7860,16 +7989,17 @@ export type TransactionOutputRef = {
 export type TransactionPatch = {
   auxiliaryData?: Maybe<AuxiliaryDataRef>;
   block?: Maybe<BlockRef>;
-  blockIndex?: Maybe<Scalars['Int']>;
   collateral?: Maybe<Array<TransactionInputRef>>;
   deposit?: Maybe<Scalars['Int64']>;
   fee?: Maybe<Scalars['Int64']>;
+  index?: Maybe<Scalars['Int']>;
   inputs?: Maybe<Array<TransactionInputRef>>;
   invalidBefore?: Maybe<Scalars['Int']>;
   invalidHereafter?: Maybe<Scalars['Int']>;
   mint?: Maybe<Array<TokenRef>>;
   outputs?: Maybe<Array<TransactionOutputRef>>;
   redeemers?: Maybe<Array<RedeemerRef>>;
+  signatures?: Maybe<Array<SignatureRef>>;
   size?: Maybe<Scalars['Int64']>;
   totalOutputCoin?: Maybe<Scalars['Int64']>;
   validContract?: Maybe<Scalars['Boolean']>;
@@ -7879,17 +8009,18 @@ export type TransactionPatch = {
 export type TransactionRef = {
   auxiliaryData?: Maybe<AuxiliaryDataRef>;
   block?: Maybe<BlockRef>;
-  blockIndex?: Maybe<Scalars['Int']>;
   collateral?: Maybe<Array<TransactionInputRef>>;
   deposit?: Maybe<Scalars['Int64']>;
   fee?: Maybe<Scalars['Int64']>;
   hash?: Maybe<Scalars['String']>;
+  index?: Maybe<Scalars['Int']>;
   inputs?: Maybe<Array<TransactionInputRef>>;
   invalidBefore?: Maybe<Scalars['Int']>;
   invalidHereafter?: Maybe<Scalars['Int']>;
   mint?: Maybe<Array<TokenRef>>;
   outputs?: Maybe<Array<TransactionOutputRef>>;
   redeemers?: Maybe<Array<RedeemerRef>>;
+  signatures?: Maybe<Array<SignatureRef>>;
   size?: Maybe<Scalars['Int64']>;
   totalOutputCoin?: Maybe<Scalars['Int64']>;
   validContract?: Maybe<Scalars['Boolean']>;
@@ -8572,6 +8703,26 @@ export type UpdateScriptPayloadScriptArgs = {
   order?: Maybe<ScriptOrder>;
 };
 
+export type UpdateSignatureInput = {
+  filter: SignatureFilter;
+  remove?: Maybe<SignaturePatch>;
+  set?: Maybe<SignaturePatch>;
+};
+
+export type UpdateSignaturePayload = {
+  __typename?: 'UpdateSignaturePayload';
+  numUids?: Maybe<Scalars['Int']>;
+  signature?: Maybe<Array<Maybe<Signature>>>;
+};
+
+
+export type UpdateSignaturePayloadSignatureArgs = {
+  filter?: Maybe<SignatureFilter>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order?: Maybe<SignatureOrder>;
+};
+
 export type UpdateSlotInput = {
   filter: SlotFilter;
   remove?: Maybe<SlotPatch>;
@@ -9088,6 +9239,40 @@ export type TipQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TipQuery = { __typename?: 'Query', queryBlock?: Array<{ __typename?: 'Block', hash: string, blockNo: number, slot: { __typename?: 'Slot', number: number } } | null | undefined> | null | undefined };
 
+type MetadatumValue_BytesMetadatum_Fragment = { __typename: 'BytesMetadatum', bytes: string };
+
+type MetadatumValue_IntegerMetadatum_Fragment = { __typename: 'IntegerMetadatum', int: number };
+
+type MetadatumValue_MetadatumArray_Fragment = { __typename: 'MetadatumArray' };
+
+type MetadatumValue_MetadatumMap_Fragment = { __typename: 'MetadatumMap' };
+
+type MetadatumValue_StringMetadatum_Fragment = { __typename: 'StringMetadatum', string: string };
+
+export type MetadatumValueFragment = MetadatumValue_BytesMetadatum_Fragment | MetadatumValue_IntegerMetadatum_Fragment | MetadatumValue_MetadatumArray_Fragment | MetadatumValue_MetadatumMap_Fragment | MetadatumValue_StringMetadatum_Fragment;
+
+export type MetadatumMapFragment = { __typename?: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> };
+
+export type MetadatumArrayFragment = { __typename?: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> };
+
+export type ProtocolParametersFragment = { __typename?: 'ProtocolParametersAlonzo', stakeKeyDeposit: number, poolDeposit: number };
+
+export type TxInFragment = { __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } };
+
+export type CoreTransactionFieldsWithoutInputsFragment = { __typename?: 'Transaction', fee: bigint, invalidBefore?: number | null | undefined, invalidHereafter?: number | null | undefined, hash: string, index: number, size: bigint, outputs: Array<{ __typename?: 'TransactionOutput', datum?: string | null | undefined, address: { __typename?: 'Address', address: string }, value: { __typename?: 'Value', coin: bigint, assets?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined } }>, collateral?: Array<{ __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } }> | null | undefined, withdrawals?: Array<{ __typename?: 'Withdrawal', quantity: bigint, rewardAccount: { __typename?: 'RewardAccount', address: string } }> | null | undefined, mint?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined, block: { __typename?: 'Block', blockNo: number, hash: string, slot: { __typename?: 'Slot', number: number } }, redeemers?: Array<{ __typename?: 'Redeemer', index: number, purpose: string, scriptHash: string, executionUnits: { __typename?: 'ExecutionUnits', memory: number, steps: number } }> | null | undefined, signatures: Array<{ __typename?: 'Signature', publicKey: string, signature: string }>, auxiliaryData?: { __typename?: 'AuxiliaryData', hash: string, body: { __typename?: 'AuxiliaryDataBody', blob?: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> | null | undefined } } | null | undefined };
+
+export type TransactionsByHashesQueryVariables = Exact<{
+  hashes: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type TransactionsByHashesQuery = { __typename?: 'Query', queryProtocolParametersAlonzo?: Array<{ __typename?: 'ProtocolParametersAlonzo', stakeKeyDeposit: number, poolDeposit: number } | null | undefined> | null | undefined, queryTransaction?: Array<{ __typename?: 'Transaction', fee: bigint, invalidBefore?: number | null | undefined, invalidHereafter?: number | null | undefined, hash: string, index: number, size: bigint, inputs: Array<{ __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } }>, outputs: Array<{ __typename?: 'TransactionOutput', datum?: string | null | undefined, address: { __typename?: 'Address', address: string }, value: { __typename?: 'Value', coin: bigint, assets?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined } }>, collateral?: Array<{ __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } }> | null | undefined, withdrawals?: Array<{ __typename?: 'Withdrawal', quantity: bigint, rewardAccount: { __typename?: 'RewardAccount', address: string } }> | null | undefined, mint?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined, block: { __typename?: 'Block', blockNo: number, hash: string, slot: { __typename?: 'Slot', number: number } }, redeemers?: Array<{ __typename?: 'Redeemer', index: number, purpose: string, scriptHash: string, executionUnits: { __typename?: 'ExecutionUnits', memory: number, steps: number } }> | null | undefined, signatures: Array<{ __typename?: 'Signature', publicKey: string, signature: string }>, auxiliaryData?: { __typename?: 'AuxiliaryData', hash: string, body: { __typename?: 'AuxiliaryDataBody', blob?: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> | null | undefined } } | null | undefined } | null | undefined> | null | undefined };
+
+export type TransactionsByAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TransactionsByAddressesQuery = { __typename?: 'Query', queryProtocolParametersAlonzo?: Array<{ __typename?: 'ProtocolParametersAlonzo', stakeKeyDeposit: number, poolDeposit: number } | null | undefined> | null | undefined, queryTransaction?: Array<{ __typename?: 'Transaction', fee: bigint, invalidBefore?: number | null | undefined, invalidHereafter?: number | null | undefined, hash: string, index: number, size: bigint, inputs: Array<{ __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } }>, outputs: Array<{ __typename?: 'TransactionOutput', datum?: string | null | undefined, address: { __typename?: 'Address', address: string }, value: { __typename?: 'Value', coin: bigint, assets?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined } }>, collateral?: Array<{ __typename?: 'TransactionInput', index: number, address: { __typename?: 'Address', address: string } }> | null | undefined, withdrawals?: Array<{ __typename?: 'Withdrawal', quantity: bigint, rewardAccount: { __typename?: 'RewardAccount', address: string } }> | null | undefined, mint?: Array<{ __typename?: 'Token', quantity: string, asset: { __typename?: 'Asset', assetId: string } }> | null | undefined, block: { __typename?: 'Block', blockNo: number, hash: string, slot: { __typename?: 'Slot', number: number } }, redeemers?: Array<{ __typename?: 'Redeemer', index: number, purpose: string, scriptHash: string, executionUnits: { __typename?: 'ExecutionUnits', memory: number, steps: number } }> | null | undefined, signatures: Array<{ __typename?: 'Signature', publicKey: string, signature: string }>, auxiliaryData?: { __typename?: 'AuxiliaryData', hash: string, body: { __typename?: 'AuxiliaryDataBody', blob?: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray', array: Array<{ __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap', map: Array<{ __typename?: 'KeyValueMetadatum', key: string, metadatum: { __typename: 'BytesMetadatum', bytes: string } | { __typename: 'IntegerMetadatum', int: number } | { __typename: 'MetadatumArray' } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string }> } | { __typename: 'MetadatumMap' } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> } | { __typename: 'StringMetadatum', string: string } }> | null | undefined } } | null | undefined } | null | undefined> | null | undefined };
+
 export const AllStakePoolFieldsFragmentDoc = gql`
     fragment allStakePoolFields on StakePool {
   id
@@ -9178,6 +9363,160 @@ export const AllStakePoolFieldsFragmentDoc = gql`
   }
 }
     `;
+export const ProtocolParametersFragmentDoc = gql`
+    fragment protocolParameters on ProtocolParametersAlonzo {
+  stakeKeyDeposit
+  poolDeposit
+}
+    `;
+export const TxInFragmentDoc = gql`
+    fragment txIn on TransactionInput {
+  index
+  address {
+    address
+  }
+}
+    `;
+export const MetadatumValueFragmentDoc = gql`
+    fragment metadatumValue on Metadatum {
+  __typename
+  ... on BytesMetadatum {
+    bytes
+  }
+  ... on IntegerMetadatum {
+    int
+  }
+  ... on StringMetadatum {
+    string
+  }
+}
+    `;
+export const MetadatumArrayFragmentDoc = gql`
+    fragment metadatumArray on MetadatumArray {
+  array {
+    ...metadatumValue
+    ... on MetadatumArray {
+      array {
+        ...metadatumValue
+      }
+    }
+    ... on MetadatumMap {
+      map {
+        key
+        metadatum {
+          ...metadatumValue
+        }
+      }
+    }
+  }
+}
+    ${MetadatumValueFragmentDoc}`;
+export const MetadatumMapFragmentDoc = gql`
+    fragment metadatumMap on MetadatumMap {
+  map {
+    key
+    metadatum {
+      ...metadatumValue
+      ... on MetadatumArray {
+        ...metadatumArray
+      }
+      ... on MetadatumMap {
+        __typename
+        map {
+          key
+          metadatum {
+            ...metadatumValue
+            ... on MetadatumArray {
+              ...metadatumArray
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    ${MetadatumValueFragmentDoc}
+${MetadatumArrayFragmentDoc}`;
+export const CoreTransactionFieldsWithoutInputsFragmentDoc = gql`
+    fragment coreTransactionFieldsWithoutInputs on Transaction {
+  outputs {
+    address {
+      address
+    }
+    value {
+      coin
+      assets {
+        asset {
+          assetId
+        }
+        quantity
+      }
+    }
+    datum
+  }
+  collateral {
+    ...txIn
+  }
+  fee
+  invalidBefore
+  invalidHereafter
+  withdrawals {
+    rewardAccount {
+      address
+    }
+    quantity
+  }
+  mint {
+    asset {
+      assetId
+    }
+    quantity
+  }
+  hash
+  index
+  size
+  block {
+    blockNo
+    slot {
+      number
+    }
+    hash
+  }
+  redeemers {
+    index
+    purpose
+    scriptHash
+    executionUnits {
+      memory
+      steps
+    }
+  }
+  signatures {
+    publicKey
+    signature
+  }
+  auxiliaryData {
+    hash
+    body {
+      blob {
+        key
+        metadatum {
+          ...metadatumValue
+          ... on MetadatumArray {
+            ...metadatumArray
+          }
+          ... on MetadatumMap {
+            ...metadatumMap
+          }
+        }
+      }
+    }
+  }
+}
+    ${TxInFragmentDoc}
+${MetadatumValueFragmentDoc}
+${MetadatumArrayFragmentDoc}
+${MetadatumMapFragmentDoc}`;
 export const BlocksByHashesDocument = gql`
     query BlocksByHashes($hashes: [String!]!) {
   queryBlock(filter: {hash: {in: $hashes}}) {
@@ -9309,6 +9648,36 @@ export const TipDocument = gql`
   }
 }
     `;
+export const TransactionsByHashesDocument = gql`
+    query TransactionsByHashes($hashes: [String!]!) {
+  queryProtocolParametersAlonzo {
+    ...protocolParameters
+  }
+  queryTransaction(filter: {hash: {in: $hashes}}) {
+    ...coreTransactionFieldsWithoutInputs
+    inputs {
+      ...txIn
+    }
+  }
+}
+    ${ProtocolParametersFragmentDoc}
+${CoreTransactionFieldsWithoutInputsFragmentDoc}
+${TxInFragmentDoc}`;
+export const TransactionsByAddressesDocument = gql`
+    query TransactionsByAddresses {
+  queryProtocolParametersAlonzo {
+    ...protocolParameters
+  }
+  queryTransaction @cascade(fields: ["inputs"]) {
+    ...coreTransactionFieldsWithoutInputs
+    inputs {
+      ...txIn
+    }
+  }
+}
+    ${ProtocolParametersFragmentDoc}
+${CoreTransactionFieldsWithoutInputsFragmentDoc}
+${TxInFragmentDoc}`;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -9337,6 +9706,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Tip(variables?: TipQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TipQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TipQuery>(TipDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Tip');
+    },
+    TransactionsByHashes(variables: TransactionsByHashesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TransactionsByHashesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<TransactionsByHashesQuery>(TransactionsByHashesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'TransactionsByHashes');
+    },
+    TransactionsByAddresses(variables?: TransactionsByAddressesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TransactionsByAddressesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<TransactionsByAddressesQuery>(TransactionsByAddressesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'TransactionsByAddresses');
     }
   };
 }

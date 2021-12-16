@@ -106,6 +106,9 @@ export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider>
         })
       );
     }
+    // async queryTransactionsByAddresses(addresses) {
+
+    // }
   } as WalletProvider);
 
 export const createGraphQLWalletProvider = createProvider<WalletProvider>(createGraphQLWalletProviderFromSdk);

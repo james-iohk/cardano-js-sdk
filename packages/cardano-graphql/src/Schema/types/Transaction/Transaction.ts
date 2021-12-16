@@ -13,6 +13,14 @@ import { TransactionOutput } from './TransactionOutput';
 import { Withdrawal } from './Withdrawal';
 
 @ObjectType()
+export class Signature {
+  @Field(() => String, { description: 'hex-encoded Ed25519 public key' })
+  publicKey: string;
+  @Field(() => String, { description: 'hex-encoded Ed25519 signature' })
+  signature: string;
+}
+
+@ObjectType()
 export class Transaction {
   @Directive('@id')
   @Field(() => String)
@@ -20,7 +28,7 @@ export class Transaction {
   @Field(() => Block)
   block: Block;
   @Field(() => Int)
-  blockIndex: number;
+  index: number;
   @Field(() => [TransactionInput], { nullable: true })
   collateral?: TransactionInput[];
   @Field(() => Int64)
@@ -55,4 +63,11 @@ export class Transaction {
   @Directive('@hasInverse(field: transaction)')
   @Field(() => [Withdrawal], { nullable: true })
   withdrawals?: Withdrawal[];
+  @Field(() => [Signature])
+  signatures: Signature[];
+  // TODO: add certificates
+  // Review: do we need these fields in the db?
+  // They're present in ogmios, but not in original cardano-graphql schema
+  // scriptIntegrityHash?: Cardano.Hash28ByteBase16;
+  // requiredExtraSignatures?: Cardano.Ed25519KeyHash[];
 }
