@@ -70,7 +70,10 @@ fragment txIn on TransactionInput {
   }
 }
 
-fragment coreTransactionFieldsWithoutInputs on Transaction {
+fragment coreTransactionFields on Transaction {
+  inputs {
+    ...txIn
+  }
   outputs {
     address {
       address
@@ -124,7 +127,9 @@ fragment coreTransactionFieldsWithoutInputs on Transaction {
     }
   }
   signatures {
-    publicKey
+    publicKey {
+      key
+    }
     signature
   }
   auxiliaryData {
@@ -151,24 +156,24 @@ query TransactionsByHashes($hashes: [String!]!) {
     ...protocolParameters
   }
   queryTransaction(filter: { hash: { in: $hashes } }) {
-    ...coreTransactionFieldsWithoutInputs
-    inputs {
-      ...txIn
-    }
+    ...coreTransactionFields
   }
 }
 
-query TransactionsByAddresses {
-  # query TransactionsByAddresses($addresses: [String!]!) {
+query TransactionIdsByAddresses($addresses: [String!]!) {
   queryProtocolParametersAlonzo {
     ...protocolParameters
   }
-  queryTransaction @cascade(fields: ["inputs"]) {
-    ...coreTransactionFieldsWithoutInputs
-    # inputs(filter: { address: { in: $addresses } }) {
-    # TODO
+  queryAddress(filter: { address: { in: $addresses } }) {
     inputs {
-      ...txIn
+      transaction {
+        ...coreTransactionFields
+      }
+    }
+    utxo {
+      transaction {
+        ...coreTransactionFields
+      }
     }
   }
 }

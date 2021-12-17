@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable max-len */
 import { BlocksByHashesQuery, Sdk } from '../../src/sdk';
 import { Cardano, ProviderFailure, WalletProvider } from '@cardano-sdk/core';
 import { createGraphQLWalletProviderFromSdk } from '../../src/WalletProvider/CardanoGraphQLWalletProvider';
@@ -37,7 +36,8 @@ describe('CardanoGraphQLWalletProvider', () => {
   });
 
   describe('currentWalletProtocolParameters', () => {
-    const protocolParams = {
+    const protocolParameters = {
+      __typename: 'ProtocolParametersAlonzo',
       coinsPerUtxoWord: 34_482,
       maxCollateralInputs: 3,
       maxTxSize: 16_384,
@@ -56,24 +56,34 @@ describe('CardanoGraphQLWalletProvider', () => {
 
     it('makes a graphql query and coerces result to core types', async () => {
       sdk.CurrentProtocolParameters.mockResolvedValueOnce({
-        queryProtocolParametersAlonzo: [protocolParams]
+        queryProtocolVersion: [{ protocolParameters }]
       });
       expect(await provider.currentWalletProtocolParameters()).toEqual({
-        coinsPerUtxoWord: protocolParams.coinsPerUtxoWord,
-        maxCollateralInputs: protocolParams.maxCollateralInputs,
-        maxTxSize: protocolParams.maxTxSize,
-        maxValueSize: protocolParams.maxValueSize,
-        minFeeCoefficient: protocolParams.minFeeCoefficient,
-        minFeeConstant: protocolParams.minFeeConstant,
-        minPoolCost: protocolParams.minPoolCost,
-        poolDeposit: protocolParams.poolDeposit,
-        protocolVersion: protocolParams.protocolVersion,
-        stakeKeyDeposit: protocolParams.stakeKeyDeposit
+        coinsPerUtxoWord: protocolParameters.coinsPerUtxoWord,
+        maxCollateralInputs: protocolParameters.maxCollateralInputs,
+        maxTxSize: protocolParameters.maxTxSize,
+        maxValueSize: protocolParameters.maxValueSize,
+        minFeeCoefficient: protocolParameters.minFeeCoefficient,
+        minFeeConstant: protocolParameters.minFeeConstant,
+        minPoolCost: protocolParameters.minPoolCost,
+        poolDeposit: protocolParameters.poolDeposit,
+        protocolVersion: protocolParameters.protocolVersion,
+        stakeKeyDeposit: protocolParameters.stakeKeyDeposit
       });
     });
 
     it('uses util.getExactlyOneObject to validate response', async () => {
       sdk.CurrentProtocolParameters.mockResolvedValueOnce({});
+      await expect(provider.currentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
+      expect(getExactlyOneObject).toBeCalledTimes(1);
+    });
+
+    it('throws if latest parameters are not Alonzo', async () => {
+      sdk.CurrentProtocolParameters.mockResolvedValueOnce({
+        queryProtocolVersion: [
+          { protocolParameters: { ...protocolParameters, __typename: 'ProtocolParametersShelley' } }
+        ]
+      });
       await expect(provider.currentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
       expect(getExactlyOneObject).toBeCalledTimes(1);
     });
@@ -219,7 +229,11 @@ describe('CardanoGraphQLWalletProvider', () => {
       hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cad',
       issuer: {
         id: 'pool1zuevzm3xlrhmwjw87ec38mzs02tlkwec9wxpgafcaykmwg7efhh',
-        vrf: 'vrf_vk19j362pkr4t9y0m3qxgmrv0365vd7c4ze03ny4jh84q8agjy4ep4s99zvg8'
+        poolParameters: [
+          {
+            vrf: 'vrf_vk19j362pkr4t9y0m3qxgmrv0365vd7c4ze03ny4jh84q8agjy4ep4s99zvg8'
+          }
+        ]
       },
       nextBlock: { hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99cae' },
       previousBlock: { hash: '6804edf9712d2b619edb6ac86861fe93a730693183a262b165fcc1ba1bc99caa' },
@@ -259,7 +273,7 @@ describe('CardanoGraphQLWalletProvider', () => {
         slotLeader: block.issuer.id,
         totalOutput: block.totalOutput,
         txCount: block.transactionsAggregate!.count,
-        vrf: block.issuer.vrf
+        vrf: block.issuer.poolParameters[0].vrf
       });
     });
 

@@ -3,22 +3,17 @@
 import { AuxiliaryData } from './AuxiliaryData';
 import { Block } from '../Block';
 import { Cardano } from '@cardano-sdk/core';
+import { Certificate } from './CertificateUnion';
 import { Directive, Field, Int, ObjectType } from 'type-graphql';
 import { Int64 } from '../util';
+import { PublicKey } from '../PublicKey';
 import { Redeemer } from './Redeemer';
+import { Signature } from './Signature';
 import { Slot } from '../Slot';
 import { Token } from './Token';
 import { TransactionInput } from './TransactionInput';
 import { TransactionOutput } from './TransactionOutput';
 import { Withdrawal } from './Withdrawal';
-
-@ObjectType()
-export class Signature {
-  @Field(() => String, { description: 'hex-encoded Ed25519 public key' })
-  publicKey: string;
-  @Field(() => String, { description: 'hex-encoded Ed25519 signature' })
-  signature: string;
-}
 
 @ObjectType()
 export class Transaction {
@@ -63,11 +58,14 @@ export class Transaction {
   @Directive('@hasInverse(field: transaction)')
   @Field(() => [Withdrawal], { nullable: true })
   withdrawals?: Withdrawal[];
+  @Directive('@hasInverse(field: transaction)')
   @Field(() => [Signature])
   signatures: Signature[];
-  // TODO: add certificates
-  // Review: do we need these fields in the db?
-  // They're present in ogmios, but not in original cardano-graphql schema
-  // scriptIntegrityHash?: Cardano.Hash28ByteBase16;
-  // requiredExtraSignatures?: Cardano.Ed25519KeyHash[];
+  @Field(() => [Certificate], { nullable: true })
+  certificates?: typeof Certificate[];
+  @Field(() => String, { nullable: true })
+  scriptIntegrityHash?: Cardano.Hash28ByteBase16;
+  @Directive('@hasInverse(field: requiredExtraSignatureInTransactions)')
+  @Field(() => [PublicKey])
+  requiredExtraSignatures?: PublicKey[];
 }

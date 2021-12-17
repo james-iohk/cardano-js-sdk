@@ -4,19 +4,22 @@ import { ProviderFromSdk, createProvider, getExactlyOneObject } from '../util';
 export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider> = (sdk) =>
   ({
     async currentWalletProtocolParameters() {
-      const { queryProtocolParametersAlonzo } = await sdk.CurrentProtocolParameters();
-      const protocolParams = getExactlyOneObject(queryProtocolParametersAlonzo, 'ProtocolParametersAlonzo');
+      const { queryProtocolVersion } = await sdk.CurrentProtocolParameters();
+      const { protocolParameters } = getExactlyOneObject(queryProtocolVersion, 'ProtocolVersion');
+      if (protocolParameters.__typename !== 'ProtocolParametersAlonzo') {
+        throw new ProviderError(ProviderFailure.NotFound, null, 'Expected Alonzo protocol parameters. Still syncing?');
+      }
       return {
-        coinsPerUtxoWord: protocolParams.coinsPerUtxoWord,
-        maxCollateralInputs: protocolParams.maxCollateralInputs,
-        maxTxSize: protocolParams.maxTxSize,
-        maxValueSize: protocolParams.maxValueSize,
-        minFeeCoefficient: protocolParams.minFeeCoefficient,
-        minFeeConstant: protocolParams.minFeeConstant,
-        minPoolCost: protocolParams.minPoolCost,
-        poolDeposit: protocolParams.poolDeposit,
-        protocolVersion: protocolParams.protocolVersion,
-        stakeKeyDeposit: protocolParams.stakeKeyDeposit
+        coinsPerUtxoWord: protocolParameters.coinsPerUtxoWord,
+        maxCollateralInputs: protocolParameters.maxCollateralInputs,
+        maxTxSize: protocolParameters.maxTxSize,
+        maxValueSize: protocolParameters.maxValueSize,
+        minFeeCoefficient: protocolParameters.minFeeCoefficient,
+        minFeeConstant: protocolParameters.minFeeConstant,
+        minPoolCost: protocolParameters.minPoolCost,
+        poolDeposit: protocolParameters.poolDeposit,
+        protocolVersion: protocolParameters.protocolVersion,
+        stakeKeyDeposit: protocolParameters.stakeKeyDeposit
       };
     },
     async genesisParameters() {
@@ -102,7 +105,7 @@ export const createGraphQLWalletProviderFromSdk: ProviderFromSdk<WalletProvider>
           slotLeader: Cardano.PoolId(block.issuer.id),
           totalOutput: BigInt(block.totalOutput),
           txCount: block.transactionsAggregate?.count || 0,
-          vrf: Cardano.VrfVkBech32(block.issuer.vrf)
+          vrf: Cardano.VrfVkBech32(getExactlyOneObject(block.issuer.poolParameters, 'PoolParameters').vrf)
         })
       );
     }
