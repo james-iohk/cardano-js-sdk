@@ -1,20 +1,10 @@
-import { ProviderFailure, WalletProvider } from '@cardano-sdk/core';
-import { Sdk } from '../../src/sdk';
-import { createGraphQLWalletProviderFromSdk } from '../../src/WalletProvider/CardanoGraphQLWalletProvider';
-
-// eslint-disable-next-line sonarjs/no-duplicate-string
-jest.mock('../../src/util', () => {
-  const actual = jest.requireActual('../../src/util');
-  return {
-    ...actual,
-    getExactlyOneObject: jest.fn().mockImplementation((...args) => actual.getExactlyOneObject(...args))
-  };
-});
-const { getExactlyOneObject } = jest.requireMock('../../src/util');
+import { ProviderFailure } from '@cardano-sdk/core';
+import { getExactlyOneObject } from '../../src/util';
+import { networkInfoProvider } from '../../src/WalletProvider/networkInfo';
 
 describe('CardanoGraphQLWalletProvider.networkInfo', () => {
-  let provider: WalletProvider;
-  const sdk = { NetworkInfo: jest.fn() };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sdk: any;
   const block = {
     epoch: {
       activeStakeAggregate: {
@@ -35,10 +25,8 @@ describe('CardanoGraphQLWalletProvider.networkInfo', () => {
     supply: { circulating: 10_000_000n, max: 100_000_000n, total: 20_000_000n }
   };
 
-  beforeEach(() => (provider = createGraphQLWalletProviderFromSdk(sdk as unknown as Sdk)));
-  afterEach(() => {
-    sdk.NetworkInfo.mockReset();
-    getExactlyOneObject.mockClear();
+  beforeEach(() => {
+    sdk = { NetworkInfo: jest.fn() };
   });
 
   it('makes a graphql query and coerces result to core types', async () => {
@@ -47,7 +35,11 @@ describe('CardanoGraphQLWalletProvider.networkInfo', () => {
       queryBlock: [block],
       queryTimeSettings: [timeSettings]
     });
-    expect(await provider.networkInfo()).toEqual({
+    const getNetworkInfo = networkInfoProvider({
+      getExactlyOneObject,
+      sdk
+    });
+    expect(await getNetworkInfo()).toEqual({
       currentEpoch: {
         end: { date: new Date('2021-12-16T17:25:03.994Z') },
         number: block.epoch.number,
@@ -71,12 +63,21 @@ describe('CardanoGraphQLWalletProvider.networkInfo', () => {
       queryBlock: [{ ...block, epoch: { ...block.epoch, activeStakeAggregate: null } }],
       queryTimeSettings: [timeSettings]
     });
-    await expect(provider.networkInfo()).rejects.toThrow(ProviderFailure.InvalidResponse);
+    const getNetworkInfo = networkInfoProvider({
+      getExactlyOneObject,
+      sdk
+    });
+    await expect(getNetworkInfo()).rejects.toThrow(ProviderFailure.InvalidResponse);
   });
 
   it('uses util.getExactlyOneObject to validate response', async () => {
+    const getExactlyOneObjectMock = jest.fn().mockImplementation(getExactlyOneObject);
     sdk.NetworkInfo.mockResolvedValueOnce({});
-    await expect(provider.networkInfo()).rejects.toThrow(ProviderFailure.NotFound);
-    expect(getExactlyOneObject).toBeCalledTimes(1);
+    const getNetworkInfo = networkInfoProvider({
+      getExactlyOneObject: getExactlyOneObjectMock,
+      sdk
+    });
+    await expect(getNetworkInfo()).rejects.toThrow(ProviderFailure.NotFound);
+    expect(getExactlyOneObjectMock).toBeCalledTimes(1);
   });
 });

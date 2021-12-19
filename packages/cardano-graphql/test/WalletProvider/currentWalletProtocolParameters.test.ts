@@ -1,20 +1,9 @@
-import { ProviderFailure, WalletProvider } from '@cardano-sdk/core';
-import { Sdk } from '../../src/sdk';
-import { createGraphQLWalletProviderFromSdk } from '../../src/WalletProvider/CardanoGraphQLWalletProvider';
-
-// eslint-disable-next-line sonarjs/no-duplicate-string
-jest.mock('../../src/util', () => {
-  const actual = jest.requireActual('../../src/util');
-  return {
-    ...actual,
-    getExactlyOneObject: jest.fn().mockImplementation((...args) => actual.getExactlyOneObject(...args))
-  };
-});
-const { getExactlyOneObject } = jest.requireMock('../../src/util');
+import { ProviderFailure } from '@cardano-sdk/core';
+import { currentWalletProtocolParametersProvider } from '../../src/WalletProvider/currentWalletProtocolParameters';
+import { getExactlyOneObject } from '../../src/util';
 
 describe('CardanoGraphQLWalletProvider.currentWalletProtocolParameters', () => {
-  let provider: WalletProvider;
-  const sdk = { CurrentProtocolParameters: jest.fn() };
+  let sdk: any;
   const protocolParameters = {
     __typename: 'ProtocolParametersAlonzo',
     coinsPerUtxoWord: 34_482,
@@ -33,17 +22,19 @@ describe('CardanoGraphQLWalletProvider.currentWalletProtocolParameters', () => {
     stakeKeyDeposit: 2_000_000
   };
 
-  beforeEach(() => (provider = createGraphQLWalletProviderFromSdk(sdk as unknown as Sdk)));
-  afterEach(() => {
-    sdk.CurrentProtocolParameters.mockReset();
-    getExactlyOneObject.mockClear();
+  beforeEach(() => {
+    sdk = { CurrentProtocolParameters: jest.fn() };
   });
 
   it('makes a graphql query and coerces result to core types', async () => {
     sdk.CurrentProtocolParameters.mockResolvedValueOnce({
       queryProtocolVersion: [{ protocolParameters }]
     });
-    expect(await provider.currentWalletProtocolParameters()).toEqual({
+    const getCurrentWalletProtocolParameters = currentWalletProtocolParametersProvider({
+      getExactlyOneObject,
+      sdk
+    });
+    expect(await getCurrentWalletProtocolParameters()).toEqual({
       coinsPerUtxoWord: protocolParameters.coinsPerUtxoWord,
       maxCollateralInputs: protocolParameters.maxCollateralInputs,
       maxTxSize: protocolParameters.maxTxSize,
@@ -59,15 +50,23 @@ describe('CardanoGraphQLWalletProvider.currentWalletProtocolParameters', () => {
 
   it('uses util.getExactlyOneObject to validate response', async () => {
     sdk.CurrentProtocolParameters.mockResolvedValueOnce({});
-    await expect(provider.currentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
-    expect(getExactlyOneObject).toBeCalledTimes(1);
+    const getExactlyOneObjectMock = jest.fn().mockImplementation(getExactlyOneObject);
+    const getCurrentWalletProtocolParameters = currentWalletProtocolParametersProvider({
+      getExactlyOneObject: getExactlyOneObjectMock,
+      sdk
+    });
+    await expect(getCurrentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
+    expect(getExactlyOneObjectMock).toBeCalledTimes(1);
   });
 
   it('throws if latest parameters are not Alonzo', async () => {
     sdk.CurrentProtocolParameters.mockResolvedValueOnce({
       queryProtocolVersion: [{ protocolParameters: { ...protocolParameters, __typename: 'ProtocolParametersShelley' } }]
     });
-    await expect(provider.currentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
-    expect(getExactlyOneObject).toBeCalledTimes(1);
+    const getCurrentWalletProtocolParameters = currentWalletProtocolParametersProvider({
+      getExactlyOneObject,
+      sdk
+    });
+    await expect(getCurrentWalletProtocolParameters()).rejects.toThrow(ProviderFailure.NotFound);
   });
 });

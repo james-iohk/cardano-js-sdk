@@ -1,20 +1,11 @@
-import { Cardano, ProviderFailure, WalletProvider } from '@cardano-sdk/core';
-import { Sdk } from '../../src/sdk';
-import { createGraphQLWalletProviderFromSdk } from '../../src/WalletProvider/CardanoGraphQLWalletProvider';
-
-// eslint-disable-next-line sonarjs/no-duplicate-string
-jest.mock('../../src/util', () => {
-  const actual = jest.requireActual('../../src/util');
-  return {
-    ...actual,
-    getExactlyOneObject: jest.fn().mockImplementation((...args) => actual.getExactlyOneObject(...args))
-  };
-});
-const { getExactlyOneObject } = jest.requireMock('../../src/util');
+import { Cardano, ProviderFailure } from '@cardano-sdk/core';
+import { genesisParametersProvider } from '../../src/WalletProvider/genesisParameters';
+import { getExactlyOneObject } from '../../src/util';
 
 describe('CardanoGraphQLWalletProvider.genesisParameters', () => {
-  let provider: WalletProvider;
-  const sdk = { GenesisParameters: jest.fn() };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sdk: any;
+
   const networkConstants = {
     activeSlotsCoefficient: 0.05,
     maxKESEvolutions: 62,
@@ -32,10 +23,8 @@ describe('CardanoGraphQLWalletProvider.genesisParameters', () => {
     supply: { max: 100_000_000n }
   };
 
-  beforeEach(() => (provider = createGraphQLWalletProviderFromSdk(sdk as unknown as Sdk)));
-  afterEach(() => {
-    sdk.GenesisParameters.mockReset();
-    getExactlyOneObject.mockClear();
+  beforeEach(() => {
+    sdk = { GenesisParameters: jest.fn() };
   });
 
   it('makes a graphql query and coerces result to core types', async () => {
@@ -44,7 +33,11 @@ describe('CardanoGraphQLWalletProvider.genesisParameters', () => {
       queryNetworkConstants: [networkConstants],
       queryTimeSettings: [timeSettings]
     });
-    expect(await provider.genesisParameters()).toEqual({
+    const getGenesisParameters = genesisParametersProvider({
+      getExactlyOneObject,
+      sdk
+    });
+    expect(await getGenesisParameters()).toEqual({
       activeSlotsCoefficient: networkConstants.activeSlotsCoefficient,
       epochLength: timeSettings.epochLength,
       maxKesEvolutions: networkConstants.maxKESEvolutions,
@@ -58,10 +51,14 @@ describe('CardanoGraphQLWalletProvider.genesisParameters', () => {
     } as Cardano.CompactGenesis);
   });
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   it('uses util.getExactlyOneObject to validate response', async () => {
+    const getExactlyOneObjectMock = jest.fn().mockImplementation(getExactlyOneObject);
     sdk.GenesisParameters.mockResolvedValueOnce({});
-    await expect(provider.genesisParameters()).rejects.toThrow(ProviderFailure.NotFound);
-    expect(getExactlyOneObject).toBeCalledTimes(1);
+    const getGenesisParameters = genesisParametersProvider({
+      getExactlyOneObject: getExactlyOneObjectMock,
+      sdk
+    });
+    await expect(getGenesisParameters()).rejects.toThrow(ProviderFailure.NotFound);
+    expect(getExactlyOneObjectMock).toBeCalledTimes(1);
   });
 });
