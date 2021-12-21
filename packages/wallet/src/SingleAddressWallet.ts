@@ -40,7 +40,7 @@ import {
 import { Logger, dummyLogger } from 'ts-log';
 import { Observable, Subject, combineLatest, firstValueFrom, lastValueFrom, map, take } from 'rxjs';
 import { RetryBackoffConfig } from 'backoff-rxjs';
-import { TxInternals, computeImplicitCoin, createTransactionInternals, ensureValidityInterval } from './Transaction';
+import { TxInternals, createTransactionInternals, ensureValidityInterval } from './Transaction';
 import { isEqual } from 'lodash-es';
 
 export interface SingleAddressWalletProps {
@@ -246,7 +246,7 @@ export class SingleAddressWallet implements Wallet {
             },
             protocolParameters
           });
-          const implicitCoin = computeImplicitCoin(protocolParameters, props);
+          const implicitCoin = Cardano.util.computeImplicitCoin(protocolParameters, props);
           return { changeAddress, constraints, implicitCoin, utxo, validityInterval };
         })
       )
