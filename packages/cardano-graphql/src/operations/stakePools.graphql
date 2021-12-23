@@ -92,7 +92,6 @@ fragment allStakePoolFields on StakePool {
   # Is stake pool active at epoch 3 and then switches to new parameters at epoch 4?
   # Current implementation will ignore the 2nd transaction, as it's ordered by epoch first.
   # I assume we also need to order by tx index in block as there can be multiple txes for registration of the same stake pool?
-  # TODO: apply same in block.graphql
   poolParameters(order: { desc: sinceEpochNo, then: { desc: transactionBlockNo } }, first: 1) {
     ...allPoolParameterFields
   }

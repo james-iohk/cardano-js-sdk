@@ -41,8 +41,6 @@ class MetadatumMap {
 
 @ObjectType()
 class MetadatumArray {
-  // Review: used to be of type JSON, but this type loses information,
-  // e.g. bytes are encoded to string, so given a string value we can't really infer type of this metadatum.
   @Field(() => [Metadatum])
   array: AnyMetadatum[];
 }

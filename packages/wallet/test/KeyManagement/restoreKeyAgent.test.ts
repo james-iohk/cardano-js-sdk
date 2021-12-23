@@ -34,9 +34,6 @@ describe('KeyManagement/restoreKeyAgent', () => {
           getPassword
         )
       ).rejects.toThrowError(
-        // Review: testing errors like is probably too specific and brittle.
-        // I think the sweet spot would be asserting 'error instanceof InvalidSerializableDataError'
-        // however I didn't find a way to do that in jest, might need to create a custom matcher for that.
         new InvalidSerializableDataError('Expected encrypted root private key in "agentData" for InMemoryKeyAgent"')
       );
     });

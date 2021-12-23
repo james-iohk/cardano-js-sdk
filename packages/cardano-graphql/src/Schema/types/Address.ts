@@ -1,5 +1,4 @@
 /* eslint-disable no-use-before-define */
-// Review: these types didn't exist in original cardano-graphql schema
 import { ActiveStake } from './ActiveStake';
 import { Cardano } from '@cardano-sdk/core';
 import { Directive, Field, ObjectType, registerEnumType } from 'type-graphql';
