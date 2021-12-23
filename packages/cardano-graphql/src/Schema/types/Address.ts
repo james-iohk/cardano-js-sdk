@@ -21,11 +21,13 @@ registerEnumType(AddressType, { name: 'AddressType' });
 
 @ObjectType()
 export class RewardAccount {
+  @Directive('@search(by: [hash])')
+  @Directive('@id')
   @Field(() => String)
   address: Cardano.RewardAccount;
   @Directive('@hasInverse(field: rewardAccount)')
-  @Field(() => ActiveStake)
-  activeStake: ActiveStake;
+  @Field(() => [ActiveStake])
+  activeStake: ActiveStake[];
   @Directive('@hasInverse(field: rewardAccount)')
   @Field(() => Address)
   addresses: Address[];
@@ -45,6 +47,7 @@ export class RewardAccount {
 export class Address {
   @Field(() => AddressType)
   addressType: AddressType;
+  @Directive('@search(by: [hash])')
   @Directive('@id')
   @Field(() => String)
   address: Cardano.Address;
