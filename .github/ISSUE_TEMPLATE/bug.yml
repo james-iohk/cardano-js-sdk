@@ -1,0 +1,58 @@
+name: Bug Report
+description: Create a bug report
+#title: ""
+labels: ["bug"]
+#assignees:
+#  -
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report.
+        Please check the existing issues before raising a bug.
+  - type: textarea
+    attributes:
+      label: Summary
+      description: A clear and specific description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce the bug
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Actual Result
+      description: What is the reproducible outcome?
+      placeholder: See error...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Result
+      description: A clear and concise description of what you expected to happen.
+      placeholder: No errors observed.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Environment
+      description: Provide release or Git revision are you using here
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Browser/Extension version
+      description: Provide details of the browser and extension you're using
+      placeholder: "Version 1.36.111 Chromium: 99.0.4844.51"
+  - type: input
+    attributes:
+      label: Node.js runtime version
+      description: Run `node -v`
+      placeholder: v14.15.0
